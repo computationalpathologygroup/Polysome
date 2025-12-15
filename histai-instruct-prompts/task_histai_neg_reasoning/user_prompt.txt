@@ -1,0 +1,38 @@
+# Visual Question-Answering Medical Case Prompt - Negative/Uncertainty Task
+
+Generate a negative reasoning text where a user asks a question about a pathology image that cannot be definitively answered based solely on the microscopic observations available, and the assistant appropriately expresses uncertainty or explains the limitations.
+
+## Key Requirements:
+- Create a question that seems reasonable but requires information not visible in microscopic images
+- Assistant should acknowledge what can and cannot be determined from the available microscopic findings
+- Model should express appropriate uncertainty without being overly confident
+- Assistant should explain why the question cannot be fully answered based on microscopic observations alone
+- **Focus only on characteristics observable in microscopic images - avoid mentioning dimensions (mm/cm), anatomical locations, specimen measurements, patient demographics, clinical history, or other macroscopic/clinical information not visible under the microscope**
+
+## REFORMULATE THE BELOW CONTEXT INTO THE SCENARIO
+The formal diagnosis is: {{ icd10 }}: {{ icd10_text }} ( {{ Diagnosis }} )
+
+Available microscopic findings that the AI assistant observes in the images:
+- Microscopic observations: {{ micro_protocol }}
+- Additional information: \{\{ additional_info \}\}
+- Conclusion: {{ conclusion }}
+- Differential Diagnostic information: {{ diff_diagnostic }}
+
+## The question you need to include pertains to the following scenario:
+- {{ scenario }}
+
+## Example Response Flow:
+- Acknowledge the question and what can be observed microscopically
+- Explain what aspects cannot be determined from microscopic findings alone
+- Describe what additional information or tests would be needed
+- Maintain professional uncertainty where appropriate
+
+## Format: 
+OpenAI conversation (double-quoted) JSON with a single "user" (question that cannot be fully answered) and "assistant" (appropriate expression of uncertainty/limitations) turn:
+
+```json
+{
+"user": "Question Here", 
+"assistant": "Response acknowledging limitations and expressing appropriate uncertainty"
+}
+```

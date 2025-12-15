@@ -1,0 +1,1899 @@
+{
+  "name": "unified_generation_and_translation_workflow_final",
+  "description": "Unified workflow that first generates 7 types of content in English, then translates each to 6 languages",
+  "data_dir": "/data",
+  "output_dir": "/output",
+  "prompts_dir": "/histai-instruct-prompts",
+  "log_dir": "/output/logs",
+  "workflow_settings": {
+    "optimize_for_engines": true,
+    "comment": "Combined generation and translation workflow using vLLM with proper dependency tree"
+  },
+  "nodes": [
+    {
+      "id": "step0_jsonl_loader",
+      "type": "load",
+      "params": {
+        "name": "load_unified_data",
+        "input_data_path": "processed_metadata_20250729_101747.json",
+        "primary_key": "case_mapping",
+        "output_file_name": "unified_workflow_input.jsonl",
+        "resume": true
+      },
+      "dependencies": []
+    },
+    {
+      "id": "descriptions_node",
+      "type": "text_prompt",
+      "params": {
+        "name": "task_histai_detailed_description",
+        "template_context_map": {},
+        "system_prompt_file": "system_prompt.txt",
+        "user_prompt_file": "user_prompt.txt",
+        "few_shot_lines_file": "few_shot.jsonl",
+        "num_few_shots": 0,
+        "model_name": "/models/gemma-3-27b-it-quantized.w4a16",
+        "inference_engine": "vllm_dp",
+        "engine_options": {
+          "data_parallel_size": 4,
+          "gpus_per_dp_rank": 1,
+          "trust_remote_code": true,
+          "gpu_memory_utilization": 0.98,
+          "max_model_len": 4096
+        },
+        "generation_options": {
+          "max_tokens": 2048,
+          "temperature": 1.0,
+          "top_p": 0.9
+        },
+        "batch_size": 200,
+        "output_data_attribute": "detailed_description",
+        "resume": true,
+        "parse_json": true,
+        "use_shared_engines": true
+      },
+      "dependencies": [
+        "step0_jsonl_loader"
+      ]
+    },
+    {
+      "id": "adv_reasoning_node",
+      "type": "text_prompt",
+      "params": {
+        "name": "task_histai_advanced_reasoning",
+        "template_context_map": {},
+        "system_prompt_file": "system_prompt.txt",
+        "user_prompt_file": "user_prompt.txt",
+        "few_shot_lines_file": "few_shot.jsonl",
+        "num_few_shots": 0,
+        "model_name": "/models/gemma-3-27b-it-quantized.w4a16",
+        "inference_engine": "vllm_dp",
+        "engine_options": {
+          "data_parallel_size": 4,
+          "gpus_per_dp_rank": 1,
+          "trust_remote_code": true,
+          "gpu_memory_utilization": 0.98,
+          "max_model_len": 4096
+        },
+        "generation_options": {
+          "max_tokens": 2048,
+          "temperature": 1.0,
+          "top_p": 0.9
+        },
+        "batch_size": 200,
+        "output_data_attribute": "advanced_reasoning",
+        "resume": true,
+        "parse_json": true,
+        "use_shared_engines": true
+      },
+      "dependencies": [
+        "step0_jsonl_loader"
+      ]
+    },
+    {
+      "id": "convo_node",
+      "type": "text_prompt",
+      "params": {
+        "name": "task_histai_multi_turn_convo",
+        "template_context_map": {},
+        "system_prompt_file": "system_prompt.txt",
+        "user_prompt_file": "user_prompt.txt",
+        "few_shot_lines_file": "few_shot.jsonl",
+        "num_few_shots": 0,
+        "model_name": "/models/gemma-3-27b-it-quantized.w4a16",
+        "inference_engine": "vllm_dp",
+        "engine_options": {
+          "data_parallel_size": 4,
+          "gpus_per_dp_rank": 1,
+          "trust_remote_code": true,
+          "gpu_memory_utilization": 0.98,
+          "max_model_len": 8192
+        },
+        "generation_options": {
+          "max_tokens": 4096,
+          "temperature": 1.0,
+          "top_p": 0.9
+        },
+        "batch_size": 100,
+        "output_data_attribute": "multi_turn_conversation",
+        "resume": true,
+        "parse_json": true,
+        "use_shared_engines": true
+      },
+      "dependencies": [
+        "step0_jsonl_loader"
+      ]
+    },
+    {
+      "id": "neg_reasoning_node",
+      "type": "text_prompt",
+      "params": {
+        "name": "task_histai_neg_reasoning",
+        "template_context_map": {},
+        "system_prompt_file": "system_prompt.txt",
+        "user_prompt_file": "user_prompt.txt",
+        "few_shot_lines_file": "few_shot.jsonl",
+        "num_few_shots": 0,
+        "model_name": "/models/gemma-3-27b-it-quantized.w4a16",
+        "inference_engine": "vllm_dp",
+        "engine_options": {
+          "data_parallel_size": 4,
+          "gpus_per_dp_rank": 1,
+          "trust_remote_code": true,
+          "gpu_memory_utilization": 0.98,
+          "max_model_len": 4096
+        },
+        "generation_options": {
+          "max_tokens": 2048,
+          "temperature": 1.0,
+          "top_p": 0.9
+        },
+        "batch_size": 200,
+        "output_data_attribute": "negative_reasoning",
+        "resume": true,
+        "parse_json": true,
+        "use_shared_engines": true
+      },
+      "dependencies": [
+        "step0_jsonl_loader"
+      ]
+    },
+    {
+      "id": "short_vqa_node",
+      "type": "text_prompt",
+      "params": {
+        "name": "task_histai_short_vqa",
+        "template_context_map": {},
+        "system_prompt_file": "system_prompt.txt",
+        "user_prompt_file": "user_prompt.txt",
+        "few_shot_lines_file": "few_shot.jsonl",
+        "num_few_shots": 0,
+        "model_name": "/models/gemma-3-27b-it-quantized.w4a16",
+        "inference_engine": "vllm_dp",
+        "engine_options": {
+          "data_parallel_size": 4,
+          "gpus_per_dp_rank": 1,
+          "trust_remote_code": true,
+          "gpu_memory_utilization": 0.98,
+          "max_model_len": 4096
+        },
+        "generation_options": {
+          "max_tokens": 1024,
+          "temperature": 1.0,
+          "top_p": 0.9
+        },
+        "batch_size": 200,
+        "output_data_attribute": "short_vqa",
+        "resume": true,
+        "parse_json": true,
+        "use_shared_engines": true
+      },
+      "dependencies": [
+        "step0_jsonl_loader"
+      ]
+    },
+    {
+      "id": "differential_diagnosis_node",
+      "type": "text_prompt",
+      "params": {
+        "name": "task_histai_differential_diagnosis",
+        "template_context_map": {},
+        "system_prompt_file": "system_prompt.txt",
+        "user_prompt_file": "user_prompt.txt",
+        "few_shot_lines_file": "few_shot.jsonl",
+        "num_few_shots": 0,
+        "model_name": "/models/gemma-3-27b-it-quantized.w4a16",
+        "inference_engine": "vllm_dp",
+        "engine_options": {
+          "data_parallel_size": 4,
+          "gpus_per_dp_rank": 1,
+          "trust_remote_code": true,
+          "gpu_memory_utilization": 0.98,
+          "max_model_len": 4096
+        },
+        "generation_options": {
+          "max_tokens": 2048,
+          "temperature": 1.0,
+          "top_p": 0.9
+        },
+        "batch_size": 200,
+        "output_data_attribute": "differential_diagnosis",
+        "resume": true,
+        "parse_json": true,
+        "use_shared_engines": true
+      },
+      "dependencies": [
+        "step0_jsonl_loader"
+      ]
+    },
+    {
+      "id": "clean_report_node",
+      "type": "text_prompt",
+      "params": {
+        "name": "task_histai_clean_report",
+        "template_context_map": {},
+        "system_prompt_file": "system_prompt.txt",
+        "user_prompt_file": "user_prompt.txt",
+        "few_shot_lines_file": "few_shot.jsonl",
+        "num_few_shots": 0,
+        "model_name": "/models/gemma-3-27b-it-quantized.w4a16",
+        "inference_engine": "vllm_dp",
+        "engine_options": {
+          "data_parallel_size": 4,
+          "gpus_per_dp_rank": 1,
+          "trust_remote_code": true,
+          "gpu_memory_utilization": 0.98,
+          "max_model_len": 4096
+        },
+        "generation_options": {
+          "max_tokens": 1024,
+          "temperature": 1.0,
+          "top_p": 0.9
+        },
+        "batch_size": 200,
+        "output_data_attribute": "clean_report",
+        "resume": true,
+        "parse_json": true,
+        "use_shared_engines": true
+      },
+      "dependencies": [
+        "step0_jsonl_loader"
+      ]
+    },
+    {
+      "id": "translate_detailed_description_dutch",
+      "type": "text_prompt",
+      "params": {
+        "name": "task_translation_dutch",
+        "template_context_map": {
+          "input_content": "detailed_description"
+        },
+        "system_prompt_file": "system_prompt.txt",
+        "user_prompt_file": "user_prompt.txt",
+        "few_shot_lines_file": "few_shot.jsonl",
+        "num_few_shots": 0,
+        "model_name": "/models/gemma-3-27b-it-quantized.w4a16",
+        "inference_engine": "vllm_dp",
+        "engine_options": {
+          "data_parallel_size": 4,
+          "gpus_per_dp_rank": 1,
+          "trust_remote_code": true,
+          "gpu_memory_utilization": 0.98,
+          "max_model_len": 4096
+        },
+        "generation_options": {
+          "max_tokens": 2048,
+          "temperature": 1.0,
+          "top_p": 0.9
+        },
+        "batch_size": 200,
+        "output_data_attribute": "detailed_description_dutch",
+        "resume": true,
+        "parse_json": true,
+        "use_shared_engines": true
+      },
+      "dependencies": [
+        "descriptions_node"
+      ]
+    },
+    {
+      "id": "translate_detailed_description_french",
+      "type": "text_prompt",
+      "params": {
+        "name": "task_translation_french",
+        "template_context_map": {
+          "input_content": "detailed_description"
+        },
+        "system_prompt_file": "system_prompt.txt",
+        "user_prompt_file": "user_prompt.txt",
+        "few_shot_lines_file": "few_shot.jsonl",
+        "num_few_shots": 0,
+        "model_name": "/models/gemma-3-27b-it-quantized.w4a16",
+        "inference_engine": "vllm_dp",
+        "engine_options": {
+          "data_parallel_size": 4,
+          "gpus_per_dp_rank": 1,
+          "trust_remote_code": true,
+          "gpu_memory_utilization": 0.98,
+          "max_model_len": 4096
+        },
+        "generation_options": {
+          "max_tokens": 2048,
+          "temperature": 1.0,
+          "top_p": 0.9
+        },
+        "batch_size": 200,
+        "output_data_attribute": "detailed_description_french",
+        "resume": true,
+        "parse_json": true,
+        "use_shared_engines": true
+      },
+      "dependencies": [
+        "descriptions_node"
+      ]
+    },
+    {
+      "id": "translate_detailed_description_german",
+      "type": "text_prompt",
+      "params": {
+        "name": "task_translation_german",
+        "template_context_map": {
+          "input_content": "detailed_description"
+        },
+        "system_prompt_file": "system_prompt.txt",
+        "user_prompt_file": "user_prompt.txt",
+        "few_shot_lines_file": "few_shot.jsonl",
+        "num_few_shots": 0,
+        "model_name": "/models/gemma-3-27b-it-quantized.w4a16",
+        "inference_engine": "vllm_dp",
+        "engine_options": {
+          "data_parallel_size": 4,
+          "gpus_per_dp_rank": 1,
+          "trust_remote_code": true,
+          "gpu_memory_utilization": 0.98,
+          "max_model_len": 4096
+        },
+        "generation_options": {
+          "max_tokens": 2048,
+          "temperature": 1.0,
+          "top_p": 0.9
+        },
+        "batch_size": 200,
+        "output_data_attribute": "detailed_description_german",
+        "resume": true,
+        "parse_json": true,
+        "use_shared_engines": true
+      },
+      "dependencies": [
+        "descriptions_node"
+      ]
+    },
+    {
+      "id": "translate_detailed_description_italian",
+      "type": "text_prompt",
+      "params": {
+        "name": "task_translation_italian",
+        "template_context_map": {
+          "input_content": "detailed_description"
+        },
+        "system_prompt_file": "system_prompt.txt",
+        "user_prompt_file": "user_prompt.txt",
+        "few_shot_lines_file": "few_shot.jsonl",
+        "num_few_shots": 0,
+        "model_name": "/models/gemma-3-27b-it-quantized.w4a16",
+        "inference_engine": "vllm_dp",
+        "engine_options": {
+          "data_parallel_size": 4,
+          "gpus_per_dp_rank": 1,
+          "trust_remote_code": true,
+          "gpu_memory_utilization": 0.98,
+          "max_model_len": 4096
+        },
+        "generation_options": {
+          "max_tokens": 2048,
+          "temperature": 1.0,
+          "top_p": 0.9
+        },
+        "batch_size": 200,
+        "output_data_attribute": "detailed_description_italian",
+        "resume": true,
+        "parse_json": true,
+        "use_shared_engines": true
+      },
+      "dependencies": [
+        "descriptions_node"
+      ]
+    },
+    {
+      "id": "translate_detailed_description_polish",
+      "type": "text_prompt",
+      "params": {
+        "name": "task_translation_polish",
+        "template_context_map": {
+          "input_content": "detailed_description"
+        },
+        "system_prompt_file": "system_prompt.txt",
+        "user_prompt_file": "user_prompt.txt",
+        "few_shot_lines_file": "few_shot.jsonl",
+        "num_few_shots": 0,
+        "model_name": "/models/gemma-3-27b-it-quantized.w4a16",
+        "inference_engine": "vllm_dp",
+        "engine_options": {
+          "data_parallel_size": 4,
+          "gpus_per_dp_rank": 1,
+          "trust_remote_code": true,
+          "gpu_memory_utilization": 0.98,
+          "max_model_len": 4096
+        },
+        "generation_options": {
+          "max_tokens": 2048,
+          "temperature": 1.0,
+          "top_p": 0.9
+        },
+        "batch_size": 200,
+        "output_data_attribute": "detailed_description_polish",
+        "resume": true,
+        "parse_json": true,
+        "use_shared_engines": true
+      },
+      "dependencies": [
+        "descriptions_node"
+      ]
+    },
+    {
+      "id": "translate_detailed_description_spanish",
+      "type": "text_prompt",
+      "params": {
+        "name": "task_translation_spanish",
+        "template_context_map": {
+          "input_content": "detailed_description"
+        },
+        "system_prompt_file": "system_prompt.txt",
+        "user_prompt_file": "user_prompt.txt",
+        "few_shot_lines_file": "few_shot.jsonl",
+        "num_few_shots": 0,
+        "model_name": "/models/gemma-3-27b-it-quantized.w4a16",
+        "inference_engine": "vllm_dp",
+        "engine_options": {
+          "data_parallel_size": 4,
+          "gpus_per_dp_rank": 1,
+          "trust_remote_code": true,
+          "gpu_memory_utilization": 0.98,
+          "max_model_len": 4096
+        },
+        "generation_options": {
+          "max_tokens": 2048,
+          "temperature": 1.0,
+          "top_p": 0.9
+        },
+        "batch_size": 200,
+        "output_data_attribute": "detailed_description_spanish",
+        "resume": true,
+        "parse_json": true,
+        "use_shared_engines": true
+      },
+      "dependencies": [
+        "descriptions_node"
+      ]
+    },
+    {
+      "id": "translate_advanced_reasoning_dutch",
+      "type": "text_prompt",
+      "params": {
+        "name": "task_translation_dutch",
+        "template_context_map": {
+          "input_content": "advanced_reasoning"
+        },
+        "system_prompt_file": "system_prompt.txt",
+        "user_prompt_file": "user_prompt.txt",
+        "few_shot_lines_file": "few_shot.jsonl",
+        "num_few_shots": 0,
+        "model_name": "/models/gemma-3-27b-it-quantized.w4a16",
+        "inference_engine": "vllm_dp",
+        "engine_options": {
+          "data_parallel_size": 4,
+          "gpus_per_dp_rank": 1,
+          "trust_remote_code": true,
+          "gpu_memory_utilization": 0.98,
+          "max_model_len": 4096
+        },
+        "generation_options": {
+          "max_tokens": 2048,
+          "temperature": 1.0,
+          "top_p": 0.9
+        },
+        "batch_size": 200,
+        "output_data_attribute": "advanced_reasoning_dutch",
+        "resume": true,
+        "parse_json": true,
+        "use_shared_engines": true
+      },
+      "dependencies": [
+        "adv_reasoning_node"
+      ]
+    },
+    {
+      "id": "translate_advanced_reasoning_french",
+      "type": "text_prompt",
+      "params": {
+        "name": "task_translation_french",
+        "template_context_map": {
+          "input_content": "advanced_reasoning"
+        },
+        "system_prompt_file": "system_prompt.txt",
+        "user_prompt_file": "user_prompt.txt",
+        "few_shot_lines_file": "few_shot.jsonl",
+        "num_few_shots": 0,
+        "model_name": "/models/gemma-3-27b-it-quantized.w4a16",
+        "inference_engine": "vllm_dp",
+        "engine_options": {
+          "data_parallel_size": 4,
+          "gpus_per_dp_rank": 1,
+          "trust_remote_code": true,
+          "gpu_memory_utilization": 0.98,
+          "max_model_len": 4096
+        },
+        "generation_options": {
+          "max_tokens": 2048,
+          "temperature": 1.0,
+          "top_p": 0.9
+        },
+        "batch_size": 200,
+        "output_data_attribute": "advanced_reasoning_french",
+        "resume": true,
+        "parse_json": true,
+        "use_shared_engines": true
+      },
+      "dependencies": [
+        "adv_reasoning_node"
+      ]
+    },
+    {
+      "id": "translate_advanced_reasoning_german",
+      "type": "text_prompt",
+      "params": {
+        "name": "task_translation_german",
+        "template_context_map": {
+          "input_content": "advanced_reasoning"
+        },
+        "system_prompt_file": "system_prompt.txt",
+        "user_prompt_file": "user_prompt.txt",
+        "few_shot_lines_file": "few_shot.jsonl",
+        "num_few_shots": 0,
+        "model_name": "/models/gemma-3-27b-it-quantized.w4a16",
+        "inference_engine": "vllm_dp",
+        "engine_options": {
+          "data_parallel_size": 4,
+          "gpus_per_dp_rank": 1,
+          "trust_remote_code": true,
+          "gpu_memory_utilization": 0.98,
+          "max_model_len": 4096
+        },
+        "generation_options": {
+          "max_tokens": 2048,
+          "temperature": 1.0,
+          "top_p": 0.9
+        },
+        "batch_size": 200,
+        "output_data_attribute": "advanced_reasoning_german",
+        "resume": true,
+        "parse_json": true,
+        "use_shared_engines": true
+      },
+      "dependencies": [
+        "adv_reasoning_node"
+      ]
+    },
+    {
+      "id": "translate_advanced_reasoning_italian",
+      "type": "text_prompt",
+      "params": {
+        "name": "task_translation_italian",
+        "template_context_map": {
+          "input_content": "advanced_reasoning"
+        },
+        "system_prompt_file": "system_prompt.txt",
+        "user_prompt_file": "user_prompt.txt",
+        "few_shot_lines_file": "few_shot.jsonl",
+        "num_few_shots": 0,
+        "model_name": "/models/gemma-3-27b-it-quantized.w4a16",
+        "inference_engine": "vllm_dp",
+        "engine_options": {
+          "data_parallel_size": 4,
+          "gpus_per_dp_rank": 1,
+          "trust_remote_code": true,
+          "gpu_memory_utilization": 0.98,
+          "max_model_len": 4096
+        },
+        "generation_options": {
+          "max_tokens": 2048,
+          "temperature": 1.0,
+          "top_p": 0.9
+        },
+        "batch_size": 200,
+        "output_data_attribute": "advanced_reasoning_italian",
+        "resume": true,
+        "parse_json": true,
+        "use_shared_engines": true
+      },
+      "dependencies": [
+        "adv_reasoning_node"
+      ]
+    },
+    {
+      "id": "translate_advanced_reasoning_polish",
+      "type": "text_prompt",
+      "params": {
+        "name": "task_translation_polish",
+        "template_context_map": {
+          "input_content": "advanced_reasoning"
+        },
+        "system_prompt_file": "system_prompt.txt",
+        "user_prompt_file": "user_prompt.txt",
+        "few_shot_lines_file": "few_shot.jsonl",
+        "num_few_shots": 0,
+        "model_name": "/models/gemma-3-27b-it-quantized.w4a16",
+        "inference_engine": "vllm_dp",
+        "engine_options": {
+          "data_parallel_size": 4,
+          "gpus_per_dp_rank": 1,
+          "trust_remote_code": true,
+          "gpu_memory_utilization": 0.98,
+          "max_model_len": 4096
+        },
+        "generation_options": {
+          "max_tokens": 2048,
+          "temperature": 1.0,
+          "top_p": 0.9
+        },
+        "batch_size": 200,
+        "output_data_attribute": "advanced_reasoning_polish",
+        "resume": true,
+        "parse_json": true,
+        "use_shared_engines": true
+      },
+      "dependencies": [
+        "adv_reasoning_node"
+      ]
+    },
+    {
+      "id": "translate_advanced_reasoning_spanish",
+      "type": "text_prompt",
+      "params": {
+        "name": "task_translation_spanish",
+        "template_context_map": {
+          "input_content": "advanced_reasoning"
+        },
+        "system_prompt_file": "system_prompt.txt",
+        "user_prompt_file": "user_prompt.txt",
+        "few_shot_lines_file": "few_shot.jsonl",
+        "num_few_shots": 0,
+        "model_name": "/models/gemma-3-27b-it-quantized.w4a16",
+        "inference_engine": "vllm_dp",
+        "engine_options": {
+          "data_parallel_size": 4,
+          "gpus_per_dp_rank": 1,
+          "trust_remote_code": true,
+          "gpu_memory_utilization": 0.98,
+          "max_model_len": 4096
+        },
+        "generation_options": {
+          "max_tokens": 2048,
+          "temperature": 1.0,
+          "top_p": 0.9
+        },
+        "batch_size": 200,
+        "output_data_attribute": "advanced_reasoning_spanish",
+        "resume": true,
+        "parse_json": true,
+        "use_shared_engines": true
+      },
+      "dependencies": [
+        "adv_reasoning_node"
+      ]
+    },
+    {
+      "id": "translate_multi_turn_conversation_dutch",
+      "type": "text_prompt",
+      "params": {
+        "name": "task_translation_dutch",
+        "template_context_map": {
+          "input_content": "multi_turn_conversation"
+        },
+        "system_prompt_file": "system_prompt.txt",
+        "user_prompt_file": "user_prompt.txt",
+        "few_shot_lines_file": "few_shot.jsonl",
+        "num_few_shots": 0,
+        "model_name": "/models/gemma-3-27b-it-quantized.w4a16",
+        "inference_engine": "vllm_dp",
+        "engine_options": {
+          "data_parallel_size": 4,
+          "gpus_per_dp_rank": 1,
+          "trust_remote_code": true,
+          "gpu_memory_utilization": 0.98,
+          "max_model_len": 8192
+        },
+        "generation_options": {
+          "max_tokens": 4096,
+          "temperature": 1.0,
+          "top_p": 0.9
+        },
+        "batch_size": 100,
+        "output_data_attribute": "multi_turn_conversation_dutch",
+        "resume": true,
+        "parse_json": true,
+        "use_shared_engines": true
+      },
+      "dependencies": [
+        "convo_node"
+      ]
+    },
+    {
+      "id": "translate_multi_turn_conversation_french",
+      "type": "text_prompt",
+      "params": {
+        "name": "task_translation_french",
+        "template_context_map": {
+          "input_content": "multi_turn_conversation"
+        },
+        "system_prompt_file": "system_prompt.txt",
+        "user_prompt_file": "user_prompt.txt",
+        "few_shot_lines_file": "few_shot.jsonl",
+        "num_few_shots": 0,
+        "model_name": "/models/gemma-3-27b-it-quantized.w4a16",
+        "inference_engine": "vllm_dp",
+        "engine_options": {
+          "data_parallel_size": 4,
+          "gpus_per_dp_rank": 1,
+          "trust_remote_code": true,
+          "gpu_memory_utilization": 0.98,
+          "max_model_len": 8192
+        },
+        "generation_options": {
+          "max_tokens": 4096,
+          "temperature": 1.0,
+          "top_p": 0.9
+        },
+        "batch_size": 100,
+        "output_data_attribute": "multi_turn_conversation_french",
+        "resume": true,
+        "parse_json": true,
+        "use_shared_engines": true
+      },
+      "dependencies": [
+        "convo_node"
+      ]
+    },
+    {
+      "id": "translate_multi_turn_conversation_german",
+      "type": "text_prompt",
+      "params": {
+        "name": "task_translation_german",
+        "template_context_map": {
+          "input_content": "multi_turn_conversation"
+        },
+        "system_prompt_file": "system_prompt.txt",
+        "user_prompt_file": "user_prompt.txt",
+        "few_shot_lines_file": "few_shot.jsonl",
+        "num_few_shots": 0,
+        "model_name": "/models/gemma-3-27b-it-quantized.w4a16",
+        "inference_engine": "vllm_dp",
+        "engine_options": {
+          "data_parallel_size": 4,
+          "gpus_per_dp_rank": 1,
+          "trust_remote_code": true,
+          "gpu_memory_utilization": 0.98,
+          "max_model_len": 8192
+        },
+        "generation_options": {
+          "max_tokens": 4096,
+          "temperature": 1.0,
+          "top_p": 0.9
+        },
+        "batch_size": 100,
+        "output_data_attribute": "multi_turn_conversation_german",
+        "resume": true,
+        "parse_json": true,
+        "use_shared_engines": true
+      },
+      "dependencies": [
+        "convo_node"
+      ]
+    },
+    {
+      "id": "translate_multi_turn_conversation_italian",
+      "type": "text_prompt",
+      "params": {
+        "name": "task_translation_italian",
+        "template_context_map": {
+          "input_content": "multi_turn_conversation"
+        },
+        "system_prompt_file": "system_prompt.txt",
+        "user_prompt_file": "user_prompt.txt",
+        "few_shot_lines_file": "few_shot.jsonl",
+        "num_few_shots": 0,
+        "model_name": "/models/gemma-3-27b-it-quantized.w4a16",
+        "inference_engine": "vllm_dp",
+        "engine_options": {
+          "data_parallel_size": 4,
+          "gpus_per_dp_rank": 1,
+          "trust_remote_code": true,
+          "gpu_memory_utilization": 0.98,
+          "max_model_len": 8192
+        },
+        "generation_options": {
+          "max_tokens": 4096,
+          "temperature": 1.0,
+          "top_p": 0.9
+        },
+        "batch_size": 100,
+        "output_data_attribute": "multi_turn_conversation_italian",
+        "resume": true,
+        "parse_json": true,
+        "use_shared_engines": true
+      },
+      "dependencies": [
+        "convo_node"
+      ]
+    },
+    {
+      "id": "translate_multi_turn_conversation_polish",
+      "type": "text_prompt",
+      "params": {
+        "name": "task_translation_polish",
+        "template_context_map": {
+          "input_content": "multi_turn_conversation"
+        },
+        "system_prompt_file": "system_prompt.txt",
+        "user_prompt_file": "user_prompt.txt",
+        "few_shot_lines_file": "few_shot.jsonl",
+        "num_few_shots": 0,
+        "model_name": "/models/gemma-3-27b-it-quantized.w4a16",
+        "inference_engine": "vllm_dp",
+        "engine_options": {
+          "data_parallel_size": 4,
+          "gpus_per_dp_rank": 1,
+          "trust_remote_code": true,
+          "gpu_memory_utilization": 0.98,
+          "max_model_len": 8192
+        },
+        "generation_options": {
+          "max_tokens": 4096,
+          "temperature": 1.0,
+          "top_p": 0.9
+        },
+        "batch_size": 100,
+        "output_data_attribute": "multi_turn_conversation_polish",
+        "resume": true,
+        "parse_json": true,
+        "use_shared_engines": true
+      },
+      "dependencies": [
+        "convo_node"
+      ]
+    },
+    {
+      "id": "translate_multi_turn_conversation_spanish",
+      "type": "text_prompt",
+      "params": {
+        "name": "task_translation_spanish",
+        "template_context_map": {
+          "input_content": "multi_turn_conversation"
+        },
+        "system_prompt_file": "system_prompt.txt",
+        "user_prompt_file": "user_prompt.txt",
+        "few_shot_lines_file": "few_shot.jsonl",
+        "num_few_shots": 0,
+        "model_name": "/models/gemma-3-27b-it-quantized.w4a16",
+        "inference_engine": "vllm_dp",
+        "engine_options": {
+          "data_parallel_size": 4,
+          "gpus_per_dp_rank": 1,
+          "trust_remote_code": true,
+          "gpu_memory_utilization": 0.98,
+          "max_model_len": 8192
+        },
+        "generation_options": {
+          "max_tokens": 4096,
+          "temperature": 1.0,
+          "top_p": 0.9
+        },
+        "batch_size": 100,
+        "output_data_attribute": "multi_turn_conversation_spanish",
+        "resume": true,
+        "parse_json": true,
+        "use_shared_engines": true
+      },
+      "dependencies": [
+        "convo_node"
+      ]
+    },
+    {
+      "id": "translate_negative_reasoning_dutch",
+      "type": "text_prompt",
+      "params": {
+        "name": "task_translation_dutch",
+        "template_context_map": {
+          "input_content": "negative_reasoning"
+        },
+        "system_prompt_file": "system_prompt.txt",
+        "user_prompt_file": "user_prompt.txt",
+        "few_shot_lines_file": "few_shot.jsonl",
+        "num_few_shots": 0,
+        "model_name": "/models/gemma-3-27b-it-quantized.w4a16",
+        "inference_engine": "vllm_dp",
+        "engine_options": {
+          "data_parallel_size": 4,
+          "gpus_per_dp_rank": 1,
+          "trust_remote_code": true,
+          "gpu_memory_utilization": 0.98,
+          "max_model_len": 4096
+        },
+        "generation_options": {
+          "max_tokens": 2048,
+          "temperature": 1.0,
+          "top_p": 0.9
+        },
+        "batch_size": 200,
+        "output_data_attribute": "negative_reasoning_dutch",
+        "resume": true,
+        "parse_json": true,
+        "use_shared_engines": true
+      },
+      "dependencies": [
+        "neg_reasoning_node"
+      ]
+    },
+    {
+      "id": "translate_negative_reasoning_french",
+      "type": "text_prompt",
+      "params": {
+        "name": "task_translation_french",
+        "template_context_map": {
+          "input_content": "negative_reasoning"
+        },
+        "system_prompt_file": "system_prompt.txt",
+        "user_prompt_file": "user_prompt.txt",
+        "few_shot_lines_file": "few_shot.jsonl",
+        "num_few_shots": 0,
+        "model_name": "/models/gemma-3-27b-it-quantized.w4a16",
+        "inference_engine": "vllm_dp",
+        "engine_options": {
+          "data_parallel_size": 4,
+          "gpus_per_dp_rank": 1,
+          "trust_remote_code": true,
+          "gpu_memory_utilization": 0.98,
+          "max_model_len": 4096
+        },
+        "generation_options": {
+          "max_tokens": 2048,
+          "temperature": 1.0,
+          "top_p": 0.9
+        },
+        "batch_size": 200,
+        "output_data_attribute": "negative_reasoning_french",
+        "resume": true,
+        "parse_json": true,
+        "use_shared_engines": true
+      },
+      "dependencies": [
+        "neg_reasoning_node"
+      ]
+    },
+    {
+      "id": "translate_negative_reasoning_german",
+      "type": "text_prompt",
+      "params": {
+        "name": "task_translation_german",
+        "template_context_map": {
+          "input_content": "negative_reasoning"
+        },
+        "system_prompt_file": "system_prompt.txt",
+        "user_prompt_file": "user_prompt.txt",
+        "few_shot_lines_file": "few_shot.jsonl",
+        "num_few_shots": 0,
+        "model_name": "/models/gemma-3-27b-it-quantized.w4a16",
+        "inference_engine": "vllm_dp",
+        "engine_options": {
+          "data_parallel_size": 4,
+          "gpus_per_dp_rank": 1,
+          "trust_remote_code": true,
+          "gpu_memory_utilization": 0.98,
+          "max_model_len": 4096
+        },
+        "generation_options": {
+          "max_tokens": 2048,
+          "temperature": 1.0,
+          "top_p": 0.9
+        },
+        "batch_size": 200,
+        "output_data_attribute": "negative_reasoning_german",
+        "resume": true,
+        "parse_json": true,
+        "use_shared_engines": true
+      },
+      "dependencies": [
+        "neg_reasoning_node"
+      ]
+    },
+    {
+      "id": "translate_negative_reasoning_italian",
+      "type": "text_prompt",
+      "params": {
+        "name": "task_translation_italian",
+        "template_context_map": {
+          "input_content": "negative_reasoning"
+        },
+        "system_prompt_file": "system_prompt.txt",
+        "user_prompt_file": "user_prompt.txt",
+        "few_shot_lines_file": "few_shot.jsonl",
+        "num_few_shots": 0,
+        "model_name": "/models/gemma-3-27b-it-quantized.w4a16",
+        "inference_engine": "vllm_dp",
+        "engine_options": {
+          "data_parallel_size": 4,
+          "gpus_per_dp_rank": 1,
+          "trust_remote_code": true,
+          "gpu_memory_utilization": 0.98,
+          "max_model_len": 4096
+        },
+        "generation_options": {
+          "max_tokens": 2048,
+          "temperature": 1.0,
+          "top_p": 0.9
+        },
+        "batch_size": 200,
+        "output_data_attribute": "negative_reasoning_italian",
+        "resume": true,
+        "parse_json": true,
+        "use_shared_engines": true
+      },
+      "dependencies": [
+        "neg_reasoning_node"
+      ]
+    },
+    {
+      "id": "translate_negative_reasoning_polish",
+      "type": "text_prompt",
+      "params": {
+        "name": "task_translation_polish",
+        "template_context_map": {
+          "input_content": "negative_reasoning"
+        },
+        "system_prompt_file": "system_prompt.txt",
+        "user_prompt_file": "user_prompt.txt",
+        "few_shot_lines_file": "few_shot.jsonl",
+        "num_few_shots": 0,
+        "model_name": "/models/gemma-3-27b-it-quantized.w4a16",
+        "inference_engine": "vllm_dp",
+        "engine_options": {
+          "data_parallel_size": 4,
+          "gpus_per_dp_rank": 1,
+          "trust_remote_code": true,
+          "gpu_memory_utilization": 0.98,
+          "max_model_len": 4096
+        },
+        "generation_options": {
+          "max_tokens": 2048,
+          "temperature": 1.0,
+          "top_p": 0.9
+        },
+        "batch_size": 200,
+        "output_data_attribute": "negative_reasoning_polish",
+        "resume": true,
+        "parse_json": true,
+        "use_shared_engines": true
+      },
+      "dependencies": [
+        "neg_reasoning_node"
+      ]
+    },
+    {
+      "id": "translate_negative_reasoning_spanish",
+      "type": "text_prompt",
+      "params": {
+        "name": "task_translation_spanish",
+        "template_context_map": {
+          "input_content": "negative_reasoning"
+        },
+        "system_prompt_file": "system_prompt.txt",
+        "user_prompt_file": "user_prompt.txt",
+        "few_shot_lines_file": "few_shot.jsonl",
+        "num_few_shots": 0,
+        "model_name": "/models/gemma-3-27b-it-quantized.w4a16",
+        "inference_engine": "vllm_dp",
+        "engine_options": {
+          "data_parallel_size": 4,
+          "gpus_per_dp_rank": 1,
+          "trust_remote_code": true,
+          "gpu_memory_utilization": 0.98,
+          "max_model_len": 4096
+        },
+        "generation_options": {
+          "max_tokens": 2048,
+          "temperature": 1.0,
+          "top_p": 0.9
+        },
+        "batch_size": 200,
+        "output_data_attribute": "negative_reasoning_spanish",
+        "resume": true,
+        "parse_json": true,
+        "use_shared_engines": true
+      },
+      "dependencies": [
+        "neg_reasoning_node"
+      ]
+    },
+    {
+      "id": "translate_short_vqa_dutch",
+      "type": "text_prompt",
+      "params": {
+        "name": "task_translation_dutch",
+        "template_context_map": {
+          "input_content": "short_vqa"
+        },
+        "system_prompt_file": "system_prompt.txt",
+        "user_prompt_file": "user_prompt.txt",
+        "few_shot_lines_file": "few_shot.jsonl",
+        "num_few_shots": 0,
+        "model_name": "/models/gemma-3-27b-it-quantized.w4a16",
+        "inference_engine": "vllm_dp",
+        "engine_options": {
+          "data_parallel_size": 4,
+          "gpus_per_dp_rank": 1,
+          "trust_remote_code": true,
+          "gpu_memory_utilization": 0.98,
+          "max_model_len": 4096
+        },
+        "generation_options": {
+          "max_tokens": 2048,
+          "temperature": 1.0,
+          "top_p": 0.9
+        },
+        "batch_size": 200,
+        "output_data_attribute": "short_vqa_dutch",
+        "resume": true,
+        "parse_json": true,
+        "use_shared_engines": true
+      },
+      "dependencies": [
+        "short_vqa_node"
+      ]
+    },
+    {
+      "id": "translate_short_vqa_french",
+      "type": "text_prompt",
+      "params": {
+        "name": "task_translation_french",
+        "template_context_map": {
+          "input_content": "short_vqa"
+        },
+        "system_prompt_file": "system_prompt.txt",
+        "user_prompt_file": "user_prompt.txt",
+        "few_shot_lines_file": "few_shot.jsonl",
+        "num_few_shots": 0,
+        "model_name": "/models/gemma-3-27b-it-quantized.w4a16",
+        "inference_engine": "vllm_dp",
+        "engine_options": {
+          "data_parallel_size": 4,
+          "gpus_per_dp_rank": 1,
+          "trust_remote_code": true,
+          "gpu_memory_utilization": 0.98,
+          "max_model_len": 4096
+        },
+        "generation_options": {
+          "max_tokens": 2048,
+          "temperature": 1.0,
+          "top_p": 0.9
+        },
+        "batch_size": 200,
+        "output_data_attribute": "short_vqa_french",
+        "resume": true,
+        "parse_json": true,
+        "use_shared_engines": true
+      },
+      "dependencies": [
+        "short_vqa_node"
+      ]
+    },
+    {
+      "id": "translate_short_vqa_german",
+      "type": "text_prompt",
+      "params": {
+        "name": "task_translation_german",
+        "template_context_map": {
+          "input_content": "short_vqa"
+        },
+        "system_prompt_file": "system_prompt.txt",
+        "user_prompt_file": "user_prompt.txt",
+        "few_shot_lines_file": "few_shot.jsonl",
+        "num_few_shots": 0,
+        "model_name": "/models/gemma-3-27b-it-quantized.w4a16",
+        "inference_engine": "vllm_dp",
+        "engine_options": {
+          "data_parallel_size": 4,
+          "gpus_per_dp_rank": 1,
+          "trust_remote_code": true,
+          "gpu_memory_utilization": 0.98,
+          "max_model_len": 4096
+        },
+        "generation_options": {
+          "max_tokens": 2048,
+          "temperature": 1.0,
+          "top_p": 0.9
+        },
+        "batch_size": 200,
+        "output_data_attribute": "short_vqa_german",
+        "resume": true,
+        "parse_json": true,
+        "use_shared_engines": true
+      },
+      "dependencies": [
+        "short_vqa_node"
+      ]
+    },
+    {
+      "id": "translate_short_vqa_italian",
+      "type": "text_prompt",
+      "params": {
+        "name": "task_translation_italian",
+        "template_context_map": {
+          "input_content": "short_vqa"
+        },
+        "system_prompt_file": "system_prompt.txt",
+        "user_prompt_file": "user_prompt.txt",
+        "few_shot_lines_file": "few_shot.jsonl",
+        "num_few_shots": 0,
+        "model_name": "/models/gemma-3-27b-it-quantized.w4a16",
+        "inference_engine": "vllm_dp",
+        "engine_options": {
+          "data_parallel_size": 4,
+          "gpus_per_dp_rank": 1,
+          "trust_remote_code": true,
+          "gpu_memory_utilization": 0.98,
+          "max_model_len": 4096
+        },
+        "generation_options": {
+          "max_tokens": 2048,
+          "temperature": 1.0,
+          "top_p": 0.9
+        },
+        "batch_size": 200,
+        "output_data_attribute": "short_vqa_italian",
+        "resume": true,
+        "parse_json": true,
+        "use_shared_engines": true
+      },
+      "dependencies": [
+        "short_vqa_node"
+      ]
+    },
+    {
+      "id": "translate_short_vqa_polish",
+      "type": "text_prompt",
+      "params": {
+        "name": "task_translation_polish",
+        "template_context_map": {
+          "input_content": "short_vqa"
+        },
+        "system_prompt_file": "system_prompt.txt",
+        "user_prompt_file": "user_prompt.txt",
+        "few_shot_lines_file": "few_shot.jsonl",
+        "num_few_shots": 0,
+        "model_name": "/models/gemma-3-27b-it-quantized.w4a16",
+        "inference_engine": "vllm_dp",
+        "engine_options": {
+          "data_parallel_size": 4,
+          "gpus_per_dp_rank": 1,
+          "trust_remote_code": true,
+          "gpu_memory_utilization": 0.98,
+          "max_model_len": 4096
+        },
+        "generation_options": {
+          "max_tokens": 2048,
+          "temperature": 1.0,
+          "top_p": 0.9
+        },
+        "batch_size": 200,
+        "output_data_attribute": "short_vqa_polish",
+        "resume": true,
+        "parse_json": true,
+        "use_shared_engines": true
+      },
+      "dependencies": [
+        "short_vqa_node"
+      ]
+    },
+    {
+      "id": "translate_short_vqa_spanish",
+      "type": "text_prompt",
+      "params": {
+        "name": "task_translation_spanish",
+        "template_context_map": {
+          "input_content": "short_vqa"
+        },
+        "system_prompt_file": "system_prompt.txt",
+        "user_prompt_file": "user_prompt.txt",
+        "few_shot_lines_file": "few_shot.jsonl",
+        "num_few_shots": 0,
+        "model_name": "/models/gemma-3-27b-it-quantized.w4a16",
+        "inference_engine": "vllm_dp",
+        "engine_options": {
+          "data_parallel_size": 4,
+          "gpus_per_dp_rank": 1,
+          "trust_remote_code": true,
+          "gpu_memory_utilization": 0.98,
+          "max_model_len": 4096
+        },
+        "generation_options": {
+          "max_tokens": 2048,
+          "temperature": 1.0,
+          "top_p": 0.9
+        },
+        "batch_size": 200,
+        "output_data_attribute": "short_vqa_spanish",
+        "resume": true,
+        "parse_json": true,
+        "use_shared_engines": true
+      },
+      "dependencies": [
+        "short_vqa_node"
+      ]
+    },
+    {
+      "id": "translate_differential_diagnosis_dutch",
+      "type": "text_prompt",
+      "params": {
+        "name": "task_translation_dutch",
+        "template_context_map": {
+          "input_content": "differential_diagnosis"
+        },
+        "system_prompt_file": "system_prompt.txt",
+        "user_prompt_file": "user_prompt.txt",
+        "few_shot_lines_file": "few_shot.jsonl",
+        "num_few_shots": 0,
+        "model_name": "/models/gemma-3-27b-it-quantized.w4a16",
+        "inference_engine": "vllm_dp",
+        "engine_options": {
+          "data_parallel_size": 4,
+          "gpus_per_dp_rank": 1,
+          "trust_remote_code": true,
+          "gpu_memory_utilization": 0.98,
+          "max_model_len": 4096
+        },
+        "generation_options": {
+          "max_tokens": 2048,
+          "temperature": 1.0,
+          "top_p": 0.9
+        },
+        "batch_size": 200,
+        "output_data_attribute": "differential_diagnosis_dutch",
+        "resume": true,
+        "parse_json": true,
+        "use_shared_engines": true
+      },
+      "dependencies": [
+        "differential_diagnosis_node"
+      ]
+    },
+    {
+      "id": "translate_differential_diagnosis_french",
+      "type": "text_prompt",
+      "params": {
+        "name": "task_translation_french",
+        "template_context_map": {
+          "input_content": "differential_diagnosis"
+        },
+        "system_prompt_file": "system_prompt.txt",
+        "user_prompt_file": "user_prompt.txt",
+        "few_shot_lines_file": "few_shot.jsonl",
+        "num_few_shots": 0,
+        "model_name": "/models/gemma-3-27b-it-quantized.w4a16",
+        "inference_engine": "vllm_dp",
+        "engine_options": {
+          "data_parallel_size": 4,
+          "gpus_per_dp_rank": 1,
+          "trust_remote_code": true,
+          "gpu_memory_utilization": 0.98,
+          "max_model_len": 4096
+        },
+        "generation_options": {
+          "max_tokens": 2048,
+          "temperature": 1.0,
+          "top_p": 0.9
+        },
+        "batch_size": 200,
+        "output_data_attribute": "differential_diagnosis_french",
+        "resume": true,
+        "parse_json": true,
+        "use_shared_engines": true
+      },
+      "dependencies": [
+        "differential_diagnosis_node"
+      ]
+    },
+    {
+      "id": "translate_differential_diagnosis_german",
+      "type": "text_prompt",
+      "params": {
+        "name": "task_translation_german",
+        "template_context_map": {
+          "input_content": "differential_diagnosis"
+        },
+        "system_prompt_file": "system_prompt.txt",
+        "user_prompt_file": "user_prompt.txt",
+        "few_shot_lines_file": "few_shot.jsonl",
+        "num_few_shots": 0,
+        "model_name": "/models/gemma-3-27b-it-quantized.w4a16",
+        "inference_engine": "vllm_dp",
+        "engine_options": {
+          "data_parallel_size": 4,
+          "gpus_per_dp_rank": 1,
+          "trust_remote_code": true,
+          "gpu_memory_utilization": 0.98,
+          "max_model_len": 4096
+        },
+        "generation_options": {
+          "max_tokens": 2048,
+          "temperature": 1.0,
+          "top_p": 0.9
+        },
+        "batch_size": 200,
+        "output_data_attribute": "differential_diagnosis_german",
+        "resume": true,
+        "parse_json": true,
+        "use_shared_engines": true
+      },
+      "dependencies": [
+        "differential_diagnosis_node"
+      ]
+    },
+    {
+      "id": "translate_differential_diagnosis_italian",
+      "type": "text_prompt",
+      "params": {
+        "name": "task_translation_italian",
+        "template_context_map": {
+          "input_content": "differential_diagnosis"
+        },
+        "system_prompt_file": "system_prompt.txt",
+        "user_prompt_file": "user_prompt.txt",
+        "few_shot_lines_file": "few_shot.jsonl",
+        "num_few_shots": 0,
+        "model_name": "/models/gemma-3-27b-it-quantized.w4a16",
+        "inference_engine": "vllm_dp",
+        "engine_options": {
+          "data_parallel_size": 4,
+          "gpus_per_dp_rank": 1,
+          "trust_remote_code": true,
+          "gpu_memory_utilization": 0.98,
+          "max_model_len": 4096
+        },
+        "generation_options": {
+          "max_tokens": 2048,
+          "temperature": 1.0,
+          "top_p": 0.9
+        },
+        "batch_size": 200,
+        "output_data_attribute": "differential_diagnosis_italian",
+        "resume": true,
+        "parse_json": true,
+        "use_shared_engines": true
+      },
+      "dependencies": [
+        "differential_diagnosis_node"
+      ]
+    },
+    {
+      "id": "translate_differential_diagnosis_polish",
+      "type": "text_prompt",
+      "params": {
+        "name": "task_translation_polish",
+        "template_context_map": {
+          "input_content": "differential_diagnosis"
+        },
+        "system_prompt_file": "system_prompt.txt",
+        "user_prompt_file": "user_prompt.txt",
+        "few_shot_lines_file": "few_shot.jsonl",
+        "num_few_shots": 0,
+        "model_name": "/models/gemma-3-27b-it-quantized.w4a16",
+        "inference_engine": "vllm_dp",
+        "engine_options": {
+          "data_parallel_size": 4,
+          "gpus_per_dp_rank": 1,
+          "trust_remote_code": true,
+          "gpu_memory_utilization": 0.98,
+          "max_model_len": 4096
+        },
+        "generation_options": {
+          "max_tokens": 2048,
+          "temperature": 1.0,
+          "top_p": 0.9
+        },
+        "batch_size": 200,
+        "output_data_attribute": "differential_diagnosis_polish",
+        "resume": true,
+        "parse_json": true,
+        "use_shared_engines": true
+      },
+      "dependencies": [
+        "differential_diagnosis_node"
+      ]
+    },
+    {
+      "id": "translate_differential_diagnosis_spanish",
+      "type": "text_prompt",
+      "params": {
+        "name": "task_translation_spanish",
+        "template_context_map": {
+          "input_content": "differential_diagnosis"
+        },
+        "system_prompt_file": "system_prompt.txt",
+        "user_prompt_file": "user_prompt.txt",
+        "few_shot_lines_file": "few_shot.jsonl",
+        "num_few_shots": 0,
+        "model_name": "/models/gemma-3-27b-it-quantized.w4a16",
+        "inference_engine": "vllm_dp",
+        "engine_options": {
+          "data_parallel_size": 4,
+          "gpus_per_dp_rank": 1,
+          "trust_remote_code": true,
+          "gpu_memory_utilization": 0.98,
+          "max_model_len": 4096
+        },
+        "generation_options": {
+          "max_tokens": 2048,
+          "temperature": 1.0,
+          "top_p": 0.9
+        },
+        "batch_size": 200,
+        "output_data_attribute": "differential_diagnosis_spanish",
+        "resume": true,
+        "parse_json": true,
+        "use_shared_engines": true
+      },
+      "dependencies": [
+        "differential_diagnosis_node"
+      ]
+    },
+    {
+      "id": "translate_clean_report_dutch",
+      "type": "text_prompt",
+      "params": {
+        "name": "task_translation_dutch",
+        "template_context_map": {
+          "input_content": "clean_report"
+        },
+        "system_prompt_file": "system_prompt.txt",
+        "user_prompt_file": "user_prompt.txt",
+        "few_shot_lines_file": "few_shot.jsonl",
+        "num_few_shots": 0,
+        "model_name": "/models/gemma-3-27b-it-quantized.w4a16",
+        "inference_engine": "vllm_dp",
+        "engine_options": {
+          "data_parallel_size": 4,
+          "gpus_per_dp_rank": 1,
+          "trust_remote_code": true,
+          "gpu_memory_utilization": 0.98,
+          "max_model_len": 4096
+        },
+        "generation_options": {
+          "max_tokens": 2048,
+          "temperature": 1.0,
+          "top_p": 0.9
+        },
+        "batch_size": 200,
+        "output_data_attribute": "clean_report_dutch",
+        "resume": true,
+        "parse_json": true,
+        "use_shared_engines": true
+      },
+      "dependencies": [
+        "clean_report_node"
+      ]
+    },
+    {
+      "id": "translate_clean_report_french",
+      "type": "text_prompt",
+      "params": {
+        "name": "task_translation_french",
+        "template_context_map": {
+          "input_content": "clean_report"
+        },
+        "system_prompt_file": "system_prompt.txt",
+        "user_prompt_file": "user_prompt.txt",
+        "few_shot_lines_file": "few_shot.jsonl",
+        "num_few_shots": 0,
+        "model_name": "/models/gemma-3-27b-it-quantized.w4a16",
+        "inference_engine": "vllm_dp",
+        "engine_options": {
+          "data_parallel_size": 4,
+          "gpus_per_dp_rank": 1,
+          "trust_remote_code": true,
+          "gpu_memory_utilization": 0.98,
+          "max_model_len": 4096
+        },
+        "generation_options": {
+          "max_tokens": 2048,
+          "temperature": 1.0,
+          "top_p": 0.9
+        },
+        "batch_size": 200,
+        "output_data_attribute": "clean_report_french",
+        "resume": true,
+        "parse_json": true,
+        "use_shared_engines": true
+      },
+      "dependencies": [
+        "clean_report_node"
+      ]
+    },
+    {
+      "id": "translate_clean_report_german",
+      "type": "text_prompt",
+      "params": {
+        "name": "task_translation_german",
+        "template_context_map": {
+          "input_content": "clean_report"
+        },
+        "system_prompt_file": "system_prompt.txt",
+        "user_prompt_file": "user_prompt.txt",
+        "few_shot_lines_file": "few_shot.jsonl",
+        "num_few_shots": 0,
+        "model_name": "/models/gemma-3-27b-it-quantized.w4a16",
+        "inference_engine": "vllm_dp",
+        "engine_options": {
+          "data_parallel_size": 4,
+          "gpus_per_dp_rank": 1,
+          "trust_remote_code": true,
+          "gpu_memory_utilization": 0.98,
+          "max_model_len": 4096
+        },
+        "generation_options": {
+          "max_tokens": 2048,
+          "temperature": 1.0,
+          "top_p": 0.9
+        },
+        "batch_size": 200,
+        "output_data_attribute": "clean_report_german",
+        "resume": true,
+        "parse_json": true,
+        "use_shared_engines": true
+      },
+      "dependencies": [
+        "clean_report_node"
+      ]
+    },
+    {
+      "id": "translate_clean_report_italian",
+      "type": "text_prompt",
+      "params": {
+        "name": "task_translation_italian",
+        "template_context_map": {
+          "input_content": "clean_report"
+        },
+        "system_prompt_file": "system_prompt.txt",
+        "user_prompt_file": "user_prompt.txt",
+        "few_shot_lines_file": "few_shot.jsonl",
+        "num_few_shots": 0,
+        "model_name": "/models/gemma-3-27b-it-quantized.w4a16",
+        "inference_engine": "vllm_dp",
+        "engine_options": {
+          "data_parallel_size": 4,
+          "gpus_per_dp_rank": 1,
+          "trust_remote_code": true,
+          "gpu_memory_utilization": 0.98,
+          "max_model_len": 4096
+        },
+        "generation_options": {
+          "max_tokens": 2048,
+          "temperature": 1.0,
+          "top_p": 0.9
+        },
+        "batch_size": 200,
+        "output_data_attribute": "clean_report_italian",
+        "resume": true,
+        "parse_json": true,
+        "use_shared_engines": true
+      },
+      "dependencies": [
+        "clean_report_node"
+      ]
+    },
+    {
+      "id": "translate_clean_report_polish",
+      "type": "text_prompt",
+      "params": {
+        "name": "task_translation_polish",
+        "template_context_map": {
+          "input_content": "clean_report"
+        },
+        "system_prompt_file": "system_prompt.txt",
+        "user_prompt_file": "user_prompt.txt",
+        "few_shot_lines_file": "few_shot.jsonl",
+        "num_few_shots": 0,
+        "model_name": "/models/gemma-3-27b-it-quantized.w4a16",
+        "inference_engine": "vllm_dp",
+        "engine_options": {
+          "data_parallel_size": 4,
+          "gpus_per_dp_rank": 1,
+          "trust_remote_code": true,
+          "gpu_memory_utilization": 0.98,
+          "max_model_len": 4096
+        },
+        "generation_options": {
+          "max_tokens": 2048,
+          "temperature": 1.0,
+          "top_p": 0.9
+        },
+        "batch_size": 200,
+        "output_data_attribute": "clean_report_polish",
+        "resume": true,
+        "parse_json": true,
+        "use_shared_engines": true
+      },
+      "dependencies": [
+        "clean_report_node"
+      ]
+    },
+    {
+      "id": "translate_clean_report_spanish",
+      "type": "text_prompt",
+      "params": {
+        "name": "task_translation_spanish",
+        "template_context_map": {
+          "input_content": "clean_report"
+        },
+        "system_prompt_file": "system_prompt.txt",
+        "user_prompt_file": "user_prompt.txt",
+        "few_shot_lines_file": "few_shot.jsonl",
+        "num_few_shots": 0,
+        "model_name": "/models/gemma-3-27b-it-quantized.w4a16",
+        "inference_engine": "vllm_dp",
+        "engine_options": {
+          "data_parallel_size": 4,
+          "gpus_per_dp_rank": 1,
+          "trust_remote_code": true,
+          "gpu_memory_utilization": 0.98,
+          "max_model_len": 4096
+        },
+        "generation_options": {
+          "max_tokens": 2048,
+          "temperature": 1.0,
+          "top_p": 0.9
+        },
+        "batch_size": 200,
+        "output_data_attribute": "clean_report_spanish",
+        "resume": true,
+        "parse_json": true,
+        "use_shared_engines": true
+      },
+      "dependencies": [
+        "clean_report_node"
+      ]
+    },
+    {
+      "id": "combine_all_unified_results",
+      "type": "combine_intermediate_outputs",
+      "params": {
+        "name": "combine_all_unified_outputs",
+        "join_strategy": "inner",
+        "column_mapping": {
+          "descriptions_node": "detailed_description",
+          "adv_reasoning_node": "advanced_reasoning",
+          "convo_node": "multi_turn_conversation",
+          "neg_reasoning_node": "negative_reasoning",
+          "short_vqa_node": "short_vqa",
+          "differential_diagnosis_node": "differential_diagnosis",
+          "clean_report_node": "clean_report",
+          "translate_detailed_description_dutch": "detailed_description_dutch",
+          "translate_detailed_description_french": "detailed_description_french",
+          "translate_detailed_description_german": "detailed_description_german",
+          "translate_detailed_description_italian": "detailed_description_italian",
+          "translate_detailed_description_polish": "detailed_description_polish",
+          "translate_detailed_description_spanish": "detailed_description_spanish",
+          "translate_advanced_reasoning_dutch": "advanced_reasoning_dutch",
+          "translate_advanced_reasoning_french": "advanced_reasoning_french",
+          "translate_advanced_reasoning_german": "advanced_reasoning_german",
+          "translate_advanced_reasoning_italian": "advanced_reasoning_italian",
+          "translate_advanced_reasoning_polish": "advanced_reasoning_polish",
+          "translate_advanced_reasoning_spanish": "advanced_reasoning_spanish",
+          "translate_multi_turn_conversation_dutch": "multi_turn_conversation_dutch",
+          "translate_multi_turn_conversation_french": "multi_turn_conversation_french",
+          "translate_multi_turn_conversation_german": "multi_turn_conversation_german",
+          "translate_multi_turn_conversation_italian": "multi_turn_conversation_italian",
+          "translate_multi_turn_conversation_polish": "multi_turn_conversation_polish",
+          "translate_multi_turn_conversation_spanish": "multi_turn_conversation_spanish",
+          "translate_negative_reasoning_dutch": "negative_reasoning_dutch",
+          "translate_negative_reasoning_french": "negative_reasoning_french",
+          "translate_negative_reasoning_german": "negative_reasoning_german",
+          "translate_negative_reasoning_italian": "negative_reasoning_italian",
+          "translate_negative_reasoning_polish": "negative_reasoning_polish",
+          "translate_negative_reasoning_spanish": "negative_reasoning_spanish",
+          "translate_short_vqa_dutch": "short_vqa_dutch",
+          "translate_short_vqa_french": "short_vqa_french",
+          "translate_short_vqa_german": "short_vqa_german",
+          "translate_short_vqa_italian": "short_vqa_italian",
+          "translate_short_vqa_polish": "short_vqa_polish",
+          "translate_short_vqa_spanish": "short_vqa_spanish",
+          "translate_differential_diagnosis_dutch": "differential_diagnosis_dutch",
+          "translate_differential_diagnosis_french": "differential_diagnosis_french",
+          "translate_differential_diagnosis_german": "differential_diagnosis_german",
+          "translate_differential_diagnosis_italian": "differential_diagnosis_italian",
+          "translate_differential_diagnosis_polish": "differential_diagnosis_polish",
+          "translate_differential_diagnosis_spanish": "differential_diagnosis_spanish",
+          "translate_clean_report_dutch": "clean_report_dutch",
+          "translate_clean_report_french": "clean_report_french",
+          "translate_clean_report_german": "clean_report_german",
+          "translate_clean_report_italian": "clean_report_italian",
+          "translate_clean_report_polish": "clean_report_polish",
+          "translate_clean_report_spanish": "clean_report_spanish"
+        },
+        "handle_conflicts": "prefix_source",
+        "retain_original_attributes": true,
+        "output_file_name": "unified_generation_and_translation_results.jsonl",
+        "resume": true,
+        "additional_output_formats": [
+          "json"
+        ],
+        "output_format_options": {
+          "json": {
+            "indent": 2,
+            "orient": "records"
+          }
+        }
+      },
+      "dependencies": [
+        "descriptions_node",
+        "adv_reasoning_node",
+        "convo_node",
+        "neg_reasoning_node",
+        "short_vqa_node",
+        "differential_diagnosis_node",
+        "clean_report_node",
+        "translate_detailed_description_dutch",
+        "translate_detailed_description_french",
+        "translate_detailed_description_german",
+        "translate_detailed_description_italian",
+        "translate_detailed_description_polish",
+        "translate_detailed_description_spanish",
+        "translate_advanced_reasoning_dutch",
+        "translate_advanced_reasoning_french",
+        "translate_advanced_reasoning_german",
+        "translate_advanced_reasoning_italian",
+        "translate_advanced_reasoning_polish",
+        "translate_advanced_reasoning_spanish",
+        "translate_multi_turn_conversation_dutch",
+        "translate_multi_turn_conversation_french",
+        "translate_multi_turn_conversation_german",
+        "translate_multi_turn_conversation_italian",
+        "translate_multi_turn_conversation_polish",
+        "translate_multi_turn_conversation_spanish",
+        "translate_negative_reasoning_dutch",
+        "translate_negative_reasoning_french",
+        "translate_negative_reasoning_german",
+        "translate_negative_reasoning_italian",
+        "translate_negative_reasoning_polish",
+        "translate_negative_reasoning_spanish",
+        "translate_short_vqa_dutch",
+        "translate_short_vqa_french",
+        "translate_short_vqa_german",
+        "translate_short_vqa_italian",
+        "translate_short_vqa_polish",
+        "translate_short_vqa_spanish",
+        "translate_differential_diagnosis_dutch",
+        "translate_differential_diagnosis_french",
+        "translate_differential_diagnosis_german",
+        "translate_differential_diagnosis_italian",
+        "translate_differential_diagnosis_polish",
+        "translate_differential_diagnosis_spanish",
+        "translate_clean_report_dutch",
+        "translate_clean_report_french",
+        "translate_clean_report_german",
+        "translate_clean_report_italian",
+        "translate_clean_report_polish",
+        "translate_clean_report_spanish"
+      ]
+    }
+  ]
+}

@@ -1,0 +1,38 @@
+# Visual Question-Answering Medical Case Prompt - Differential Diagnosis
+
+Generate a differential diagnosis reasoning task where a user presents multiple possible diagnoses and asks the AI assistant to analyze the microscopic findings to determine which diagnosis is most appropriate based on what can be observed in the pathology images.
+
+## Key Requirements:
+- Present 2-4 plausible differential diagnoses in the question
+- Assistant should systematically analyze the microscopic findings
+- Assistant should reason through which features support or exclude each differential diagnosis
+- Assistant should conclude with the most likely diagnosis based on microscopic observations
+- Assistant only references what can be observed in microscopic images, without directly mentioning a report
+- **Focus only on characteristics observable in microscopic images - avoid mentioning dimensions (mm/cm), anatomical locations, specimen measurements, patient demographics, clinical history, or other macroscopic/clinical information not visible under the microscope**
+- Reasoning should be clear and methodical, explaining the decision-making process
+
+## Reasoning Structure:
+- Acknowledge the differential diagnoses presented
+- Systematically evaluate key microscopic features observed
+- Explain how findings support or exclude each differential diagnosis
+- Conclude with the most likely diagnosis and key supporting evidence
+
+## REFORMULATE THE BELOW CONTEXT INTO THE SCENARIO
+
+The formal diagnosis is: {{ icd10 }}: {{ icd10_text }} ( {{ Diagnosis }} )
+
+Available microscopic findings that the AI assistant observes in the images:
+- Microscopic observations: {{ micro_protocol }}
+- Additional information: {{ additional_info }}
+- Conclusion: {{ conclusion }}
+- Differential Diagnostic information: {{ diff_diagnostic }}
+
+## Format: 
+OpenAI conversation (double-quoted) JSON with a single "user" (differential diagnosis question) and "assistant" (systematic reasoning and conclusion) turn:
+
+```json
+{
+  "user": "Given these microscopic findings, what would be your differential diagnosis? Consider: [Diagnosis A], [Diagnosis B], [Diagnosis C]. Which do you think is most likely and why?",
+  "assistant": "Systematic analysis and reasoning leading to final diagnosis"
+}
+```

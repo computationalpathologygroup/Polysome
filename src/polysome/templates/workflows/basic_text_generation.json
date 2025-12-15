@@ -1,0 +1,53 @@
+{
+  "name": "basic_text_generation",
+  "description": "Simple text generation workflow example - generates responses based on prompts",
+  "data_dir": "./data",
+  "output_dir": "./output",
+  "prompts_dir": "./prompts",
+  "log_dir": "./output/logs",
+  "workflow_settings": {
+    "optimize_for_engines": false,
+    "comment": "Basic example workflow for text generation"
+  },
+  "nodes": [
+    {
+      "id": "load_data",
+      "type": "load",
+      "params": {
+        "name": "load_input_data",
+        "input_data_path": "input.json",
+        "primary_key": "id",
+        "output_file_name": "loaded_data.jsonl",
+        "resume": true
+      },
+      "dependencies": []
+    },
+    {
+      "id": "generate_text",
+      "type": "text_prompt",
+      "params": {
+        "name": "simple_qa",
+        "template_context_map": {},
+        "system_prompt_file": "system_prompt.txt",
+        "user_prompt_file": "user_prompt.txt",
+        "few_shot_lines_file": "few_shot.jsonl",
+        "num_few_shots": 0,
+        "model_name": "google/gemma-2-2b-it",
+        "inference_engine": "huggingface",
+        "engine_options": {
+          "torch_dtype": "bfloat16",
+          "device_map": "auto"
+        },
+        "generation_options": {
+          "max_new_tokens": 512,
+          "temperature": 0.7,
+          "top_p": 0.9
+        },
+        "batch_size": 8,
+        "output_data_attribute": "response",
+        "resume": true
+      },
+      "dependencies": ["load_data"]
+    }
+  ]
+}

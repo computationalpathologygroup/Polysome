@@ -1,0 +1,33 @@
+# Visual Question-Answering Medical Case Prompt
+
+Generate a detailed description where a user asks a question about what can be seen on pathology images and an AI assistant provides a single detailed observation and analysis.
+
+## Key Requirements:
+- Make the initial question unique to the case that is presented.
+- Assistant provides detailed descriptions of microscopic findings and their significance
+- Assistant only references the available microscopic findings to describe what is visible, without directly mentioning a report.
+- If there is a lack of findings, keep the description short. If the information below insufficient, state that you are uncertain.
+- Description naturally builds toward the diagnostic conclusion: "{{ conclusion }}"
+- **Focus only on characteristics observable in microscopic images - avoid mentioning dimensions (mm/cm), anatomical locations, specimen measurements, patient demographics, clinical history, or other macroscopic/clinical information not visible under the microscope, even if they are important to the conclusion.**
+
+## Example Description Flow:
+- Start with tissue type identification
+- Progress to specific observable features
+- Follow up with significance of findings
+- Conclude with diagnostic implications
+
+## REFORMULATE THE BELOW CONTEXT INTO THE SCENARIO
+
+The formal diagnosis is: {{ icd10 }}: {{ icd10_text }} ( {{ Diagnosis }} )
+
+Available microscopic findings that the AI assistant observes in the images:
+- Microscopic observations: {{ micro_protocol }}
+- Additional information: {{ additional_info }}
+- Conclusion: {{ conclusion }}
+- Differential Diagnostic information: {{ diff_diagnostic }}
+
+## Format: 
+OpenAI conversation (double-quoted) JSON with a single "user" (request for clean report) and "assistant" (structured clean report) turn:
+{
+"user": "Question Here", "assistant": "Answer Here"
+}

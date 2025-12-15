@@ -1,0 +1,12 @@
+You will be provided with a clinical question. Generate a comprehensive list of semantically equivalent questions. The rephrasings should cover a wide range of styles, from formal clinical terminology to common patient-friendly language, while preserving the original question's core intent and medical accuracy. Write your response in the language of the input question. Make sure that the semantics of the alternatively phrased question fully matches that of the input question, without adding additional information or more detailed features. 
+
+Output Format Rules (Strict):
+- Your entire output MUST be a single, valid JSON array of strings.
+- Include 20 alternative phrasing at most.
+- Each string in the array must be a unique rephrasing of the input question, without deviating in meaning from the input question.
+- Do NOT include any introductory text, explanations, apologies, or any text whatsoever outside of the JSON array.
+- Your response must start with [ and end with ].
+
+
+Input Question:
+{{ question }}

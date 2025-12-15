@@ -1,0 +1,5 @@
+Please translate the following English medical content to Spanish while preserving the exact (double-quoted) JSON structure:
+
+{{ input_content }}
+
+Translate all English text content to Spanish, but keep all JSON keys unchanged. Ensure medical accuracy and use appropriate Spanish medical terminology.

@@ -1,0 +1,79 @@
+[build-system]
+requires = [
+  "setuptools>=78.1.0",
+] # Or another build backend like hatchling, flit
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "Polysome" # Choose a name for your installable package
+version = "0.1.0"
+authors = [{ name = "Sander Moonemans", email = "sander.moonemans@radboudumc.nl" }]
+description = "A domain-agnostic framework for orchestrating LLM-based data generation workflows"
+readme = "README.md" # Optional: Path to your README file
+requires-python = ">=3.10" # Specify compatible Python versions
+license = { text = "MIT" }
+keywords = ["llm", "data-generation", "machine-learning", "workflow", "instruction-tuning"]
+classifiers = [ # Optional: PyPI classifiers
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.10",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "License :: OSI Approved :: MIT License",
+  "Operating System :: OS Independent",
+  "Development Status :: 4 - Beta",
+  "Intended Audience :: Science/Research",
+  "Topic :: Scientific/Engineering :: Artificial Intelligence",
+]
+dependencies = [
+  "python-dotenv",
+  "pandas==2.2.3",
+  "pandas-stubs==2.2.3.250308",
+  "openpyxl==3.1.5",
+  "transformers==4.51.3",
+  "torch>=2.0.0",
+  "jinja2>=3.0.0",
+  "tqdm>=4.65.0",
+]
+
+[project.urls]
+Homepage = "https://github.com/computationalpathologygroup/Polysome"
+Repository = "https://github.com/computationalpathologygroup/Polysome"
+Issues = "https://github.com/computationalpathologygroup/Polysome/issues"
+
+[project.scripts]
+polysome = "polysome.cli:main"
+
+[project.optional-dependencies]
+dev = [
+  "pytest==8.3.5",
+  "pytest-mock==3.14.0",
+  "pytest-cov>=4.0.0",
+  "pytest-xdist>=3.0.0",
+  "streamlit",
+]
+gpu = [
+  "torch>=2.6.0",
+  "accelerate>=0.26.0",
+  "vllm==0.8.4",
+]
+gpu-dev = [
+  "polysome[gpu,dev]",
+]
+cpu = [
+  "llama-cpp-python",
+]
+cpu-dev = [
+  "polysome[cpu,dev]",
+]
+
+[tool.setuptools.packages.find]
+where = [
+  "src",
+] # Tells setuptools to look for packages inside the 'src' directory
+
+[tool.setuptools.package-data]
+polysome = [
+  "templates/workflows/*.json",
+  "templates/prompts/*/*.txt",
+  "templates/prompts/*/*.jsonl",
+]

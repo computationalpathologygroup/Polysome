@@ -1,0 +1,37 @@
+# Visual Question-Answering Medical Case Prompt - Clean Report Generation
+
+Generate a clean, readable pathology report based purely on microscopic observations visible in the pathology images. The user requests a simplified, well-structured report that focuses only on what can be directly observed under the microscope.
+
+## Key Requirements:
+- Generate a clean, professional pathology report in plain text
+- Focus exclusively on microscopic findings visible in the images
+- Exclude all clinical information, patient demographics, specimen dimensions, anatomical locations, and macroscopic features
+- Use clear, accessible language while maintaining medical accuracy
+- Structure the report logically with appropriate sections
+- **CRITICAL: Do not include any information about clinical history, patient age/gender, specimen measurements (mm/cm), anatomical locations, gross descriptions, or other non-microscopic information, even if provided in the context**
+- The assistant is "looking" at microscopic images and describing only what is microscopically visible
+
+## Report Structure:
+- Microscopic Description: Detailed description of tissue architecture and cellular features
+- Diagnosis: Clear, concise diagnostic conclusion
+- Comments (if applicable): Brief interpretation or significance of findings
+
+## REFORMULATE THE BELOW CONTEXT INTO THE SCENARIO
+
+The formal diagnosis is: {{ icd10 }}: {{ icd10_text }} ( {{ diagnosis }} )
+
+Available microscopic findings that the AI assistant observes in the images:
+- Microscopic observations: {{ micro_protocol }}
+- Additional information: {{ additional_info }}
+- Conclusion: {{ conclusion }}
+- Differential Diagnostic information: {{ diff_diagnostic }}
+
+## Format: 
+OpenAI conversation (double-quoted) JSON with a single "user" (question) and "assistant" (detailed observations) turn:
+
+```json
+{
+  "user": "Can you provide a clean, readable pathology report based on what you observe in these microscopic images?",
+  "assistant": "Clean, structured pathology report here"
+}
+```

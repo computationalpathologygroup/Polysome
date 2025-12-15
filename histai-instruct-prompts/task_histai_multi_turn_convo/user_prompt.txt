@@ -1,0 +1,42 @@
+# Visual Question-Answering Medical Case Prompt
+
+Generate a multi-turn visual question-answering conversation where a user asks questions about pathology images and an AI assistant provides detailed observations and analysis. The user should start with basic questions and progressively ask more specific follow-up questions based on the assistant's responses.
+
+## Key Requirements:
+- User asks simple, direct questions about what they observe in the pathology images
+- Assistant provides detailed descriptions of microscopic findings and their significance
+- Questions progress from general tissue identification to specific pathological features
+- Assistant only references the available microscopic findings to describe what is visible, without directly mentioning a report.
+- If there is a lack of findings, keep the conversation short.
+- Conversation naturally builds toward the diagnostic conclusion: "{{ conclusion }}"
+- **Focus only on characteristics observable in microscopic images - avoid mentioning dimensions (mm/cm), slide or coupe identity information, anatomical locations, specimen measurements, patient demographics, clinical history, or other macroscopic/clinical information not visible under the microscope, even if they are important to the conclusion.**
+- If there is a lack of context provided in this prompt create a single question and answer, with basic information and a statement that you cannot see more in this image. **If the information is not given in the context, do not add it on the conversation.**
+
+## Example Conversational Flow:
+- Start with tissue type identification
+- Progress to specific observable features
+- Follow up with significance of findings
+- Conclude with diagnostic implications
+
+## REFORMULATE THE BELOW CONTEXT INTO THE SCENARIO
+The formal diagnosis is: {{ icd10 }}: {{ icd10_text }} ( {{ Diagnosis }} )
+
+Available microscopic findings that the AI assistant observes in the images:
+- Microscopic observations: {{ micro_protocol }}
+- Additional information: {{ additional_info }}
+- Conclusion: {{ conclusion }}
+- Differential Diagnostic information: {{ diff_diagnostic }}
+
+## Format: 
+OpenAI conversation (double-quoted) JSON with alternating "user" (questions) and "assistant" (detailed observations) roles:
+[
+   {
+      "user":"<some user question here>",
+      "assistant":"<some response by the assistant here>"
+
+   },
+   {
+      "user":"<some user question here>",
+      "assistant":"<some response by the assistant here>"
+   }
+]

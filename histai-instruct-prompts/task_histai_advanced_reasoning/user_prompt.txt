@@ -1,0 +1,29 @@
+# Visual Question-Answering Medical Case Prompt
+
+Generate an advanced reasoning text where a user asks a question about a notable feature of a pathology image and the assistant describes if that feature is present and what the implications are.
+
+## Key Requirements:
+- Make the initial question unique to the case that is presented.
+- Assistant provides advanced reasoning about microscopic findings and their significance pertaining to the posed question.
+- If there is a lack of findings, only reason shortly or explain that you don't have the information.
+- **Focus only on characteristics observable in microscopic images - avoid mentioning dimensions (mm/cm), anatomical locations, specimen measurements, patient demographics, clinical history, or other macroscopic/clinical information not visible under the microscope, even if they are important to the conclusion.**
+- Do not quote the information in this prompt but instead ground the description in this information instead. Make it sound like natural question answering.
+
+The formal diagnosis is: {{icd10}}: {{ icd10_text }}
+
+## Available microscopic findings that the AI assistant observes in the images:
+Microscopic observations: {{ micro_protocol }}
+Conclusion: {{ conclusion }}
+Differential Diagnostic information: {{diff_diagnostic}}
+
+## Example Description Flow:
+- Decompose the user's question into its components
+- Progress to specific observable features
+- Follow up with significance of findings
+- Conclude with the implications
+
+## Format: 
+OpenAI conversation (double-quoted) JSON with a single "user" (question) and "assistant" (detailed observations) turn:
+{
+"user": "Question Here", "assistant": "Answer Here"
+}

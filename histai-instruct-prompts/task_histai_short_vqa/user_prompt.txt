@@ -1,0 +1,38 @@
+# Visual Question-Answering Medical Case Prompt - Short VQA
+
+Generate exactly 3 standardized question-answer pairs for pathology image analysis. Each question targets a specific diagnostic aspect with ultra-concise answers.
+
+## Required Questions (Always ask these 3):
+
+1. **Organ/Tissue Identification**: "Which organ or residual normal tissue can be recognized in the image(s) of the histological slide?"
+2. **Neoplasm Detection**: "Is there a neoplasm present in the image(s) of the histological slide?"
+3. **Lesion Naming**: "What is most likely the name of the lesion in the image(s) of the histological slide?"
+
+## Answer Requirements:
+- **Ultra-concise answers**: Use single words when possible, maximum 1-3 words
+- **Direct responses**: No explanations, just the answer
+- **Examples**:
+  - Organ: "Breast", "Lung", "Colon", "Skin"
+  - Neoplasm: "Yes", "No"
+  - Lesion: "Adenocarcinoma", "Nevus", "Hyperplasia", "Normal tissue"
+
+## REFORMULATE THE BELOW CONTEXT INTO THE SCENARIO
+
+The formal diagnosis is: {{ icd10 }}: {{ icd10_text }} ( {{ Diagnosis }} )
+
+Available microscopic findings that the AI assistant observes in the images:
+- Microscopic observations: {{ micro_protocol }}
+- Additional information: \{\{ additional_info \}\}
+- Conclusion: {{ conclusion }}
+- Differential Diagnostic information: {{ diff_diagnostic }}
+
+## Format: 
+OpenAI conversation (double-quoted) JSON with exactly 3 question-answer pairs in this exact order:
+
+```json
+[
+  {"user": "Which organ or residual normal tissue can be recognized in the image(s) of the histological slide?", "assistant": "[1-3 word answer]"},
+  {"user": "Is there a neoplasm present in the image(s) of the histological slide?", "assistant": "[Yes/No]"},
+  {"user": "What is most likely the name of the lesion in the image(s) of the histological slide?", "assistant": "[1-3 word diagnosis]"}
+]
+```

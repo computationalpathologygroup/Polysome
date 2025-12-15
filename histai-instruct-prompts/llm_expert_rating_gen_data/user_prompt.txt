@@ -1,0 +1,54 @@
+Carefully compare the Generated Conversation against the Source Report according to the detailed Evaluation Rubric below.Source Report:{
+  "icd10": "{{ icd10 }}",
+  "icd10_text": "{{ icd10_text }}",
+  "micro_protocol": "{{ micro_protocol }}",
+  "conclusion": "{{ conclusion }}",
+  "diff_diagnostic": "{{ diff_diagnostic }}"
+}
+Generated Conversation:{{ generated_text }}
+
+## Evaluation Rubric
+
+1. Constraint Adherence (Binary Score)
+Does the assistant's response strictly adhere to the negative constraint of using only microscopic findings? (Ignore the user's question for this rubric).
+- Score 1 (Adherent): The assistant's answer exclusively discusses features visible under a microscope as provided in the source.
+- Score 0 (Non-Adherent): The assistant's answer mentions any information not visible microscopically (e.g., patient demographics, clinical history, specimen dimensions, anatomical location).
+
+2. Factual Groundedness and Accuracy (1-5 Scale)
+How accurately does the assistant's answer reflect the facts provided in the Source Report, without adding or contradicting information?
+- Score 5 (Excellent): Perfectly reflects all relevant source facts. The answer is completely grounded in the source; it does not omit key details, contradict the source, or introduce any information not present in the source.
+- Score 4 (Good): All stated facts are correct and grounded, but there is a minor omission of a non-critical detail from the source.
+- Score 3 (Acceptable): Contains a significant omission of a key finding from the source, OR introduces a minor, plausible piece of information not found in the source (minor hallucination).
+- Score 2 (Poor): Contains a clear factual error that contradicts the source material OR introduces a significant piece of information not found in the source (significant hallucination).
+- Score 1 (Very Poor): Contains multiple factual contradictions, dangerous hallucinations, or fundamentally misrepresents the source conclusion.
+
+3. Reasoning Quality & Clarity (1-3 Scale)
+How clear, logical, and well-structured is the assistant's reasoning?
+- Score 3 (Excellent): The reasoning is clear, logically flows from observation to implication, and is easy to understand.
+- Score 2 (Acceptable): The reasoning is generally correct but may be slightly confusing, verbose, or poorly structured.
+- Score 1 (Poor): The reasoning is unclear, illogical, convoluted, or incoherent.
+
+Task
+First, provide a concise, step-by-step analysis comparing the Generated Conversation to the Source Report. In your reasoning, explicitly justify the score you will assign for each rubric item.
+Second, provide the final JSON object with your ratings and justifications.
+
+Final Output in this exact format, with the step-by-step reasoning inside of the json.:
+{
+  "step-by-step-reasoning": "<Your brief thinking process and justification for the scores goes here.>",
+  "evaluation_scores": {
+    "constraint_adherence": {
+      "score": <integer_score_0_or_1>,
+      "justification": "<Briefly justify the score. e.g., 'Adherent. Assistant response is purely microscopic.' or 'Non-adherent, assistant mentions patient age.'>"
+    },
+    "factual_groundedness_and_accuracy": {
+      "score": <integer_score_1_to_5>,
+      "justification": "<Briefly justify the score. e.g., 'Fully grounded and accurate.' or 'Introduces information about necrosis not found in the source report.'>"
+    },
+    "reasoning_clarity": {
+      "score": <integer_score_1_to_3>,
+      "justification": "<Briefly justify the score. e.g., 'Clear logical flow.' or 'Reasoning is convoluted and hard to follow.'>"
+    }
+  }
+}
+
+Start your response with the opening bracket `{` and end with the closing bracket `}`.

@@ -1,0 +1,44 @@
+# Model files - these should be mounted at runtime, not included in build
+model/
+*.gguf
+*.bin
+*.safetensors
+
+# Virtual environment
+venv/
+__pycache__/
+*.pyc
+
+# Development files
+.git/
+.gitignore
+*.log
+test.log
+
+# Test data and outputs
+test/output/
+*.egg-info/
+
+# Documentation
+docs/
+gc_docs/
+README.md
+*.md
+
+# Development scripts (keep inference scripts)
+output_reviewer.py
+prompt_editor.py
+
+# Preprocessing data
+preprocessing/
+
+# IDE files
+.vscode/
+.idea/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+test/

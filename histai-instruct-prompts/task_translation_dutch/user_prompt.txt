@@ -1,0 +1,5 @@
+Please translate the following English medical content to Dutch while preserving the exact (double-quoted) JSON structure:
+
+{{ input_content }}
+
+Translate all English text content to Dutch, but keep all JSON keys unchanged. Ensure medical accuracy and use appropriate Dutch medical terminology.
