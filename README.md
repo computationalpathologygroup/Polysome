@@ -176,5 +176,12 @@ To enable this, use the `vllm_dp` engine in your workflow configuration. See **[
 This framework was originally developed to support visual instruction tuning. If you use this code to generate data for such models, please consider citing the following paper:
 
 ```bibtex
-
+@inproceedings{moonemans2025open,
+  title = {Open Instruction Tuning for Whole-Slide Digital Pathology},
+  author = {Sander Moonemans and Sebastiaan Ram and Fr{\'e}d{\'e}rique Meeuwsen and Jeroen van der Laak and Geert Litjens and Francesco Ciompi},
+  booktitle = {Submitted to Medical Imaging with Deep Learning},
+  year = {2025},
+  url = {https://openreview.net/forum?id=aGPowreqPi},
+  note = {under review}
+}
 ```
