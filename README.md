@@ -19,6 +19,8 @@ While originally developed for computational pathology, Polysome is domain-agnos
 
 ### Installation
 
+**Pending publication to PyPi**, please use `pip install .` after cloning the repo to use it. 
+
 Install Polysome from PyPI:
 
 ```bash
