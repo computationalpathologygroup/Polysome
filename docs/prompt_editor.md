@@ -16,25 +16,21 @@ The Jinja Prompt & Example Manager is a Streamlit application designed to help y
 
 ### Prerequisites
 
-1.  **Python Environment:** Ensure you have Python installed with Streamlit and other necessary libraries (`pandas`, `openpyxl`).
-2.  **`prompts` Directory:** The application expects a directory named `prompts` in the same location where the Streamlit app is run. This directory will store all your tasks.
+1.  **Python Environment:** Ensure you have Python 3.10+ installed.
+2.  **Installation:** Install Polysome with the `ui` extra to include Streamlit and other necessary libraries:
+    ```bash
+    pip install "polysome[ui]"
     ```
-    your_project_root/
-    ├── your_streamlit_app.py
-    └── prompts/
-        └── (tasks will be created here)
-    ```
-    Each task will have its own subdirectory within `prompts/`.
 
 ### Launching the App
 
-Navigate to the directory containing `your_streamlit_app.py` in your terminal and run:
+Once installed, you can launch the Prompt Editor from any directory using the built-in CLI command:
 
 ```bash
-streamlit run your_streamlit_app.py
+polysome-gui
 ```
 
-This will open the application in your web browser.
+This will automatically find the editor script within the package and open the application in your web browser.
 
 ## Main Interface
 

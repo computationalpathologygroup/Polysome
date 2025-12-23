@@ -234,6 +234,40 @@ def run_workflow(workflow_path: str, validate_first: bool = True, log_level: str
         return 1
 
 
+def run_gui():
+    """Launch the Polysome Prompt Editor (Streamlit app)."""
+    try:
+        import subprocess
+        import sys
+        from pathlib import Path
+        
+        # Path to the prompt_editor.py inside the package
+        script_path = Path(__file__).parent / "prompt_editor.py"
+        
+        if not script_path.exists():
+            print(f"Error: Prompt Editor script not found at {script_path}")
+            return 1
+            
+        print("Launching Polysome Prompt Editor...")
+        
+        # Build the streamlit run command
+        cmd = [sys.executable, "-m", "streamlit", "run", str(script_path)]
+        
+        # Pass through any additional arguments
+        if len(sys.argv) > 1:
+            cmd.extend(sys.argv[1:])
+            
+        # Run streamlit
+        return subprocess.call(cmd)
+        
+    except ImportError:
+        print("Error: Streamlit not found. Please install with: pip install 'polysome[ui]'")
+        return 1
+    except Exception as e:
+        print(f"Error launching GUI: {e}")
+        return 1
+
+
 def main():
     """Main CLI entry point."""
     parser = argparse.ArgumentParser(
