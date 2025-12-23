@@ -5,8 +5,8 @@ requires = [
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "Polysome" # Choose a name for your installable package
-version = "0.1.0"
+name = "polysome" # Choose a name for your installable package
+version = "0.1.1"
 authors = [{ name = "Sander Moonemans", email = "sander.moonemans@radboudumc.nl" }]
 description = "A domain-agnostic framework for orchestrating LLM-based data generation workflows"
 readme = "README.md" # Optional: Path to your README file
@@ -43,6 +43,7 @@ Issues = "https://github.com/computationalpathologygroup/Polysome/issues"
 
 [project.scripts]
 polysome = "polysome.cli:main"
+polysome-gui = "polysome.cli:run_gui"
 
 [project.optional-dependencies]
 dev = [
@@ -50,6 +51,8 @@ dev = [
   "pytest-mock==3.14.0",
   "pytest-cov>=4.0.0",
   "pytest-xdist>=3.0.0",
+]
+ui = [
   "streamlit",
 ]
 vllm = [
@@ -66,9 +69,15 @@ gpu = [
 cpu = [
   "polysome[llama-cpp]",
 ]
+gpu-dev = [
+  "polysome[gpu,dev]",
+]
+cpu-dev = [
+  "polysome[cpu,dev]",
+]
 # 'all' installs everything for dev/testing
 all = [
-  "polysome[vllm,llama-cpp,dev]",
+  "polysome[vllm,llama-cpp,ui,dev]",
 ]
 
 [tool.setuptools.packages.find]

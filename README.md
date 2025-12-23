@@ -21,7 +21,7 @@ Install Polysome from PyPI (minimal install, HuggingFace only):
 pip install polysome
 ```
 
-**For specific engines:**
+**For specific engines or features:**
 
 ```bash
 # vLLM (Recommended for Linux + NVIDIA GPU)
@@ -30,6 +30,9 @@ pip install "polysome[vllm]"
 # llama.cpp (Recommended for CPU or Apple Silicon)
 pip install "polysome[llama-cpp]"
 
+# UI / Prompt Editor
+pip install "polysome[ui]"
+
 # Install everything (for development/testing)
 pip install "polysome[all]"
 ```
@@ -37,6 +40,17 @@ pip install "polysome[all]"
 **Convenience aliases:**
 * `pip install "polysome[gpu]"` → installs `vllm` stack
 * `pip install "polysome[cpu]"` → installs `llama-cpp` stack
+
+### 🔑 Hugging Face Authentication
+
+Many models (like Gemma-3) are gated and require authentication. Before running workflows with these models, log in via the CLI:
+
+```bash
+pip install huggingface_hub
+huggingface-cli login
+```
+
+Alternatively, set the `HF_TOKEN` environment variable.
 
 ### Create Your First Project
 
@@ -66,13 +80,13 @@ polysome run workflows/my_workflow.json --log-level DEBUG
 ### Customize for Your Use Case
 
 1. **Edit your workflow** (`workflows/basic_text_generation.json`):
-   * Change the model name
+   * Change the model name (default: `google/gemma-3-4b-it`)
    * Adjust generation parameters
    * Add or remove processing nodes
 
 2. **Customize prompts** (`prompts/simple_qa/`):
    * `system_prompt.txt`: Define the AI's role
-   * `user_prompt.txt`: Template with variables like `{question}`
+   * `user_prompt.txt`: Template with variables like `{{ question }}`
    * `few_shot.jsonl`: Example inputs and outputs
 
 3. **Prepare your data** (`data/input.json`):
@@ -89,18 +103,18 @@ polysome run workflows/my_workflow.json --log-level DEBUG
 For reproducible environments or deployment:
 
 ```bash
-# Pull the image
-docker pull ghcr.io/computationalpathologygroup/polysome:latest
-
 # Run with Docker
 docker run --rm --gpus all \
   -v ./data:/data \
   -v ./output:/output \
   -v ./workflows:/workflows \
   -v ./prompts:/prompts \
+  -v ~/.cache/huggingface:/root/.cache/huggingface \
   -e WORKFLOW_PATH=/workflows/basic_text_generation.json \
   ghcr.io/computationalpathologygroup/polysome:latest
 ```
+
+*Note: We recommend mounting your Hugging Face cache to avoid re-downloading models.*
 
 For detailed Docker usage, see [docs/docker_container.md](docs/docker_container.md).
 
@@ -130,9 +144,9 @@ git clone https://github.com/computationalpathologygroup/Polysome.git
 cd Polysome
 
 # Install in development mode with dependencies
-pip install -e .[gpu-dev]  # For GPU development
+pip install -e ".[gpu-dev]"  # For GPU development
 # OR
-pip install -e .[cpu-dev]  # For CPU development
+pip install -e ".[cpu-dev]"  # For CPU development
 ```
 
 ### Running Tests
@@ -154,7 +168,7 @@ Polysome includes a **Streamlit-based Prompt Editor** to help you design, manage
 
 ```bash
 # Run the editor
-streamlit run prompt_editor.py
+polysome-gui
 ```
 
 For a user guide on managing templates and few-shot examples, see **[docs/prompt_editor.md](docs/prompt_editor.md)**.

@@ -32,7 +32,7 @@
         "user_prompt_file": "user_prompt.txt",
         "few_shot_lines_file": "few_shot.jsonl",
         "num_few_shots": 0,
-        "model_name": "google/gemma-2-2b-it",
+        "model_name": "google/gemma-3-4b-it",
         "inference_engine": "huggingface",
         "engine_options": {
           "torch_dtype": "bfloat16",
