@@ -1,7 +1,3 @@
-# For Reviewers
-
-This is a pre-release version of Polysome. Thank you for reviewing!
-
 # Polysome
 
 Polysome is a **generic data generation framework** designed for transforming text attributes using Large Language Models. It serves as a powerful workflow builder for chaining prompts to generate synthetic data at scale.
@@ -18,8 +14,6 @@ While originally developed for computational pathology, Polysome is domain-agnos
 ## 🚀 Quick Start
 
 ### Installation
-
-**Pending publication to PyPi**, please use `pip install .` after cloning the repo to use it. 
 
 Install Polysome from PyPI (minimal install, HuggingFace only):
 
