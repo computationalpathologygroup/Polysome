@@ -211,3 +211,4 @@ deploy_*.py
 test/
 model/
 PRE_RELEASE_CHECKLIST.md
+CHECKLIST_STATUS.md

@@ -21,23 +21,28 @@ While originally developed for computational pathology, Polysome is domain-agnos
 
 **Pending publication to PyPi**, please use `pip install .` after cloning the repo to use it. 
 
-Install Polysome from PyPI:
+Install Polysome from PyPI (minimal install, HuggingFace only):
 
 ```bash
 pip install polysome
 ```
 
-For GPU support with vLLM:
+**For specific engines:**
 
 ```bash
-pip install polysome[gpu]
+# vLLM (Recommended for Linux + NVIDIA GPU)
+pip install "polysome[vllm]"
+
+# llama.cpp (Recommended for CPU or Apple Silicon)
+pip install "polysome[llama-cpp]"
+
+# Install everything (for development/testing)
+pip install "polysome[all]"
 ```
 
-For CPU-only with llama.cpp:
-
-```bash
-pip install polysome[cpu]
-```
+**Convenience aliases:**
+* `pip install "polysome[gpu]"` → installs `vllm` stack
+* `pip install "polysome[cpu]"` → installs `llama-cpp` stack
 
 ### Create Your First Project
 

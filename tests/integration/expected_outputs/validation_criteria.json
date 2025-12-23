@@ -1,0 +1,17 @@
+{
+  "expected_record_count": 5,
+  "min_answer_length": 10,
+  "required_fields": ["id", "question", "answer"],
+  "keyword_expectations": {
+    "q001": "Paris",
+    "q002": "Deep Learning",
+    "q003": "Photosynthesis",
+    "q004": "12",
+    "q005": "Shakespeare"
+  },
+  "output_paths": {
+    "huggingface": "integration_test_huggingface/generate_answers_hf.jsonl",
+    "vllm": "integration_test_vllm/generate_answers_vllm.jsonl",
+    "llamacpp": "integration_test_llamacpp/generate_answers_llamacpp.jsonl"
+  }
+}

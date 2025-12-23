@@ -56,8 +56,8 @@ COPY inference.py .
 RUN python3.11 -m pip install --no-cache-dir \
   https://github.com/JamePeng/llama-cpp-python/releases/download/v0.3.9-cu126-AVX2-linux-20250701/llama_cpp_python-0.3.9-cp311-cp311-linux_x86_64.whl
 
-# Install the package with GPU dependencies using UV
-RUN uv pip install --system -e .[gpu]
+# Install the package with all optional dependencies using UV
+RUN uv pip install --system -e .[all]
 
 
 # Model weights placeholder - these will be mounted at runtime

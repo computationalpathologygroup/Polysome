@@ -741,6 +741,9 @@ class Workflow:
         actual_node_count = len([item for item in self.execution_order if not item.startswith("__ENGINE_CLEANUP__")])
         node_counter = 0
         
+        # Track overall success
+        all_nodes_successful = True
+
         for i, item in enumerate(self.execution_order):
             # Check if this is a cleanup marker
             if item.startswith("__ENGINE_CLEANUP__"):
@@ -784,7 +787,8 @@ class Workflow:
                 logger.error(
                     f"Workflow execution aborted due to unmet dependency for node '{node_id}'."
                 )
-                return False
+                all_nodes_successful = False
+                break
 
             # --- Run Node ---
             try:
@@ -808,6 +812,7 @@ class Workflow:
                     logger.warning(
                         f"Node '{node_id}' reported a failure. Subsequent nodes may be affected or fail."
                     )
+                    all_nodes_successful = False
 
                 # Clean up node resources (like models) after execution
                 # JSONLProcessingNode already calls cleanup_processing in its finally block,
@@ -840,7 +845,8 @@ class Workflow:
                 logger.error(
                     f"Workflow execution aborted due to critical error in node '{node_id}'."
                 )
-                return False
+                all_nodes_successful = False
+                break
 
         logger.info(f"--- Workflow Execution Finished: '{self.workflow_name}' ---")
 
@@ -858,7 +864,7 @@ class Workflow:
         except Exception as e:
             logger.warning(f"Error during engine pool cleanup: {e}")
 
-        return True
+        return all_nodes_successful
 
     def print_execution_tree(self) -> str:
         """
