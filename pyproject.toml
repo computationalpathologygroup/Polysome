@@ -31,6 +31,7 @@ dependencies = [
   "openpyxl==3.1.5",
   "transformers==4.51.3",
   "torch>=2.0.0",
+  "accelerate>=0.26.0",
   "jinja2>=3.0.0",
   "tqdm>=4.65.0",
 ]
@@ -51,19 +52,23 @@ dev = [
   "pytest-xdist>=3.0.0",
   "streamlit",
 ]
+vllm = [
+  "vllm>=0.8.0; platform_system == 'Linux'",
+]
+llama-cpp = [
+  "llama-cpp-python>=0.2.0",
+]
+# 'gpu' is a convenience alias for the fastest inference stack on Linux
 gpu = [
-  "torch>=2.6.0",
-  "accelerate>=0.26.0",
-  "vllm==0.8.4",
+  "polysome[vllm]", 
 ]
-gpu-dev = [
-  "polysome[gpu,dev]",
-]
+# 'cpu' is a convenience alias for quantized local inference
 cpu = [
-  "llama-cpp-python",
+  "polysome[llama-cpp]",
 ]
-cpu-dev = [
-  "polysome[cpu,dev]",
+# 'all' installs everything for dev/testing
+all = [
+  "polysome[vllm,llama-cpp,dev]",
 ]
 
 [tool.setuptools.packages.find]

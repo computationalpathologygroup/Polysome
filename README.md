@@ -1,7 +1,3 @@
-# For Reviewers
-
-This is a pre-release version of Polysome. Thank you for reviewing!
-
 # Polysome
 
 Polysome is a **generic data generation framework** designed for transforming text attributes using Large Language Models. It serves as a powerful workflow builder for chaining prompts to generate synthetic data at scale.
@@ -19,25 +15,28 @@ While originally developed for computational pathology, Polysome is domain-agnos
 
 ### Installation
 
-**Pending publication to PyPi**, please use `pip install .` after cloning the repo to use it. 
-
-Install Polysome from PyPI:
+Install Polysome from PyPI (minimal install, HuggingFace only):
 
 ```bash
 pip install polysome
 ```
 
-For GPU support with vLLM:
+**For specific engines:**
 
 ```bash
-pip install polysome[gpu]
+# vLLM (Recommended for Linux + NVIDIA GPU)
+pip install "polysome[vllm]"
+
+# llama.cpp (Recommended for CPU or Apple Silicon)
+pip install "polysome[llama-cpp]"
+
+# Install everything (for development/testing)
+pip install "polysome[all]"
 ```
 
-For CPU-only with llama.cpp:
-
-```bash
-pip install polysome[cpu]
-```
+**Convenience aliases:**
+* `pip install "polysome[gpu]"` → installs `vllm` stack
+* `pip install "polysome[cpu]"` → installs `llama-cpp` stack
 
 ### Create Your First Project
 
